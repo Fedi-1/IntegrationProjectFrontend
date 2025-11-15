@@ -1,0 +1,167 @@
+<div class="dashboard-wrapper">
+  <!-- Use shared navigation bar -->
+  <app-student-navbar></app-student-navbar>
+
+  <div class="dashboard-container">
+    
+    <!-- Welcome Banner -->
+    <div class="welcome-banner" *ngIf="currentUser">
+      <div class="welcome-content">
+        <h2 class="welcome-title">Welcome back, {{ currentUser.firstName }}! 👋</h2>
+        <p class="welcome-subtitle">Ready to continue your learning journey?</p>
+      </div>
+      <div class="welcome-illustration">
+        <div class="floating-icon">🎯</div>
+        <div class="floating-icon delay-1">📖</div>
+        <div class="floating-icon delay-2">✨</div>
+      </div>
+    </div>
+
+    <!-- Quick Actions Grid -->
+    <div class="actions-section">
+      <div class="section-header">
+        <h2 class="section-title">Quick Actions</h2>
+        <p class="section-subtitle">Choose what you'd like to do today</p>
+      </div>
+      
+      <div class="action-cards">
+      
+        <!-- Generate/Regenerate Schedule -->
+        <div class="action-card card-purple" (click)="navigateToGenerate()">
+          <div class="card-header">
+            <div class="card-icon-wrapper purple">
+              <span class="card-icon">🤖</span>
+            </div>
+            <span class="card-status">{{ hasSchedule ? 'Update' : 'New' }}</span>
+          </div>
+          <h3 class="card-title">{{ hasSchedule ? 'Regenerate' : 'Generate' }} Schedule</h3>
+          <p class="card-description">{{ hasSchedule ? 'Create a new AI-powered study schedule' : 'Generate your first AI-powered study schedule' }}</p>
+          <div class="card-footer">
+            <span class="card-action">{{ hasSchedule ? 'Regenerate Now' : 'Get Started' }}</span>
+            <span class="card-arrow">→</span>
+          </div>
+        </div>
+
+        <!-- View Schedule (if exists) -->
+        <div 
+          class="action-card card-blue" 
+          [class.disabled]="!hasSchedule"
+          (click)="hasSchedule && navigateToView()"
+        >
+          <div class="card-header">
+            <div class="card-icon-wrapper blue">
+              <span class="card-icon">📅</span>
+            </div>
+            <span class="card-status" *ngIf="hasSchedule">Active</span>
+            <span class="card-status disabled-status" *ngIf="!hasSchedule">Locked</span>
+          </div>
+          <h3 class="card-title">View Schedule</h3>
+          <p class="card-description">{{ hasSchedule ? 'See your current study schedule' : 'Generate a schedule first' }}</p>
+          <div class="card-footer">
+            <span class="card-action">View Details</span>
+            <span class="card-arrow">→</span>
+          </div>
+        </div>
+
+        <!-- Today's Study Plan -->
+        <div 
+          class="action-card card-orange" 
+          [class.disabled]="!hasSchedule"
+          (click)="hasSchedule && navigateToToday()"
+        >
+          <div class="card-header">
+            <div class="card-icon-wrapper orange">
+              <span class="card-icon">☀️</span>
+            </div>
+            <span class="card-badge" *ngIf="hasSchedule && todayStats && todayStats.remaining > 0">
+              {{ todayStats.remaining }} pending
+            </span>
+          </div>
+          <h3 class="card-title">Today's Study Plan</h3>
+          <p class="card-description">{{ hasSchedule ? 'Track your daily study sessions' : 'Generate a schedule first' }}</p>
+          <div class="card-footer">
+            <span class="card-action">View Today</span>
+            <span class="card-arrow">→</span>
+          </div>
+        </div>
+
+        <!-- Take Quiz -->
+        <div class="action-card card-pink" (click)="navigateToQuiz()">
+          <div class="card-header">
+            <div class="card-icon-wrapper pink">
+              <span class="card-icon">�</span>
+            </div>
+            <span class="card-status">Ready</span>
+          </div>
+          <h3 class="card-title">Take Quiz</h3>
+          <p class="card-description">Test your knowledge with AI-generated quizzes</p>
+          <div class="card-footer">
+            <span class="card-action">Start Quiz</span>
+            <span class="card-arrow">→</span>
+          </div>
+        </div>
+
+        <!-- Quiz History -->
+        <div class="action-card card-cyan" (click)="navigateToHistory()">
+          <div class="card-header">
+            <div class="card-icon-wrapper cyan">
+              <span class="card-icon">📊</span>
+            </div>
+            <span class="card-status">Track</span>
+          </div>
+          <h3 class="card-title">Quiz History</h3>
+          <p class="card-description">Review your past quizzes and track progress</p>
+          <div class="card-footer">
+            <span class="card-action">View History</span>
+            <span class="card-arrow">→</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Features Highlights -->
+    <div class="features-section">
+      <div class="section-header">
+        <h2 class="section-title">Platform Features</h2>
+        <p class="section-subtitle">Powerful tools to enhance your learning experience</p>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <span class="feature-icon">🤖</span>
+          </div>
+          <h4 class="feature-title">AI-Powered</h4>
+          <p class="feature-description">Advanced AI creates personalized study schedules tailored to your needs</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <span class="feature-icon">📚</span>
+          </div>
+          <h4 class="feature-title">Multi-Subject</h4>
+          <p class="feature-description">Comprehensive support for all your subjects and topics in one place</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <span class="feature-icon">⏰</span>
+          </div>
+          <h4 class="feature-title">Time Optimized</h4>
+          <p class="feature-description">Balanced study sessions with breaks for maximum productivity</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <span class="feature-icon">🎯</span>
+          </div>
+          <h4 class="feature-title">Progress Tracking</h4>
+          <p class="feature-description">Monitor completion status and identify areas for improvement</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

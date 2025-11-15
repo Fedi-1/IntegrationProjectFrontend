@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Session - Student Schedule Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            text-align: center;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        
+        .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .success {
+            color: #48bb78;
+        }
+        
+        .message {
+            color: #4a5568;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .info-box {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .info-box p {
+            color: #2d3748;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            cursor: pointer;
+            border: none;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #2d3748;
+            box-shadow: none;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .cleared-data {
+            background: #fed7d7;
+            border-left: 4px solid #f56565;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .cleared-data h3 {
+            color: #c53030;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .cleared-data pre {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+            color: #2d3748;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon success">✅</div>
+        <h1>Session Cleared Successfully!</h1>
+        
+        <div class="message">
+            Your browser's localStorage has been cleared. The cached user session (Ahmed Hassan) has been removed.
+        </div>
+        
+        <div id="clearedData" class="cleared-data" style="display: none;">
+            <h3>🗑️ Removed Data:</h3>
+            <pre id="dataContent"></pre>
+        </div>
+        
+        <div class="info-box">
+            <p><strong>✅ What was cleared:</strong></p>
+            <p>• User session data (currentUser)</p>
+            <p>• Authentication tokens</p>
+            <p>• Any cached preferences</p>
+        </div>
+        
+        <div class="info-box">
+            <p><strong>🔄 Next Steps:</strong></p>
+            <p>1. Click "Go to Login Page" below</p>
+            <p>2. You should see the login form (not the dashboard)</p>
+            <p>3. Sign up or login with your credentials</p>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <a href="http://localhost:4200/login" class="btn">Go to Login Page</a>
+            <button onclick="location.reload()" class="btn btn-secondary">Clear Again</button>
+        </div>
+        
+        <div class="message" style="margin-top: 30px; font-size: 14px; color: #718096;">
+            <p>💡 <strong>Tip:</strong> Bookmark this page to quickly clear your session during development!</p>
+        </div>
+    </div>
+    
+    <script>
+        // Clear localStorage
+        const oldData = localStorage.getItem('currentUser');
+        
+        if (oldData) {
+            // Show what was cleared
+            document.getElementById('clearedData').style.display = 'block';
+            try {
+                const parsed = JSON.parse(oldData);
+                document.getElementById('dataContent').textContent = JSON.stringify(parsed, null, 2);
+            } catch (e) {
+                document.getElementById('dataContent').textContent = oldData;
+            }
+        }
+        
+        // Clear all localStorage
+        localStorage.clear();
+        
+        // Also clear sessionStorage
+        sessionStorage.clear();
+        
+        // Clear any cookies (optional)
+        document.cookie.split(";").forEach(function(c) { 
+            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+        });
+        
+        console.log('✅ Session cleared successfully!');
+        console.log('📍 Current URL:', window.location.href);
+        console.log('🔗 Ready to redirect to login page');
+    </script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<div class="schedule-view-container">
+  <!-- Use shared navigation bar -->
+  <app-student-navbar></app-student-navbar>
+
+  <div class="content-wrapper">
+    <div class="header">
+      <h1>📅 My Study Schedule</h1>
+      <p>Your personalized AI-generated weekly schedule</p>
+    </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading your schedule...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <div class="alert alert-error">
+      <strong>❌ Error:</strong> {{ error }}
+    </div>
+    <div class="error-actions">
+      <button class="btn btn-primary" (click)="regenerateSchedule()">
+        🤖 Generate New Schedule
+      </button>
+      <button class="btn btn-secondary" (click)="goToDashboard()">
+        🏠 Go to Dashboard
+      </button>
+    </div>
+  </div>
+
+  <!-- Schedule Content -->
+  <div *ngIf="schedule && !loading && !error" class="schedule-content">
+    
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn btn-primary" (click)="regenerateSchedule()">
+        🔄 Regenerate Schedule
+      </button>
+      <button class="btn btn-secondary" (click)="printSchedule()">
+        🖨️ Print
+      </button>
+      <button class="btn btn-secondary" (click)="exportSchedule()">
+        💾 Export
+      </button>
+      <button class="btn btn-danger" (click)="deleteSchedule()">
+        🗑️ Delete
+      </button>
+    </div>
+
+    <!-- Days Navigation -->
+    <div class="days-navigation">
+      <button 
+        *ngFor="let day of daysOfWeek"
+        class="day-tab"
+        [class.active]="selectedDay === day"
+        [class.has-schedule]="hasScheduleForDay(day)"
+        (click)="selectDay(day)"
+      >
+        <span class="day-name">{{ day }}</span>
+        <span class="day-hours" *ngIf="hasScheduleForDay(day)">
+          {{ getTotalStudyHours(day) }}h
+        </span>
+      </button>
+    </div>
+
+    <!-- Selected Day Schedule -->
+    <div class="day-schedule-container" *ngIf="getDaySchedule(selectedDay) as daySchedule">
+      <div class="day-header">
+        <h2>{{ selectedDay }}</h2>
+        <p class="study-hours">
+          Total Study Time: <strong>{{ getTotalStudyHours(selectedDay) }} hours</strong>
+        </p>
+      </div>
+
+      <div class="timeline">
+        <div 
+          *ngFor="let timeSlot of getTimeSlots(daySchedule)"
+          class="activity-block"
+          [ngClass]="getActivityColor(getActivityBlock(daySchedule, timeSlot).activity)"
+        >
+          <div class="time-slot">{{ timeSlot }}</div>
+          <div class="activity-content">
+            <div class="activity-header">
+              <span class="activity-icon">
+                {{ getActivityIcon(getActivityBlock(daySchedule, timeSlot).activity) }}
+              </span>
+              <span class="activity-name">
+                {{ getActivityBlock(daySchedule, timeSlot).activity | titlecase }}
+              </span>
+              <span class="duration">
+                {{ getActivityBlock(daySchedule, timeSlot).durationMinutes }} min
+              </span>
+            </div>
+            <div class="activity-details" *ngIf="getActivityBlock(daySchedule, timeSlot).subject">
+              <div class="subject">
+                📚 {{ getActivityBlock(daySchedule, timeSlot).subject }}
+              </div>
+              <div class="topic" *ngIf="getActivityBlock(daySchedule, timeSlot).topic">
+                📖 {{ getActivityBlock(daySchedule, timeSlot).topic }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Schedule for Selected Day -->
+    <div class="no-schedule" *ngIf="!getDaySchedule(selectedDay)">
+      <p>😴 No activities scheduled for {{ selectedDay }}</p>
+      <p class="subtitle">Consider this a rest day!</p>
+    </div>
+
+    <!-- Weekly Overview -->
+    <div class="weekly-overview">
+      <h3>📊 Weekly Overview</h3>
+      <div class="overview-grid">
+        <div 
+          *ngFor="let day of daysOfWeek"
+          class="overview-card"
+          [class.has-schedule]="hasScheduleForDay(day)"
+          (click)="selectDay(day)"
+        >
+          <div class="overview-day">{{ day.substring(0, 3) }}</div>
+          <div class="overview-hours" *ngIf="hasScheduleForDay(day)">
+            {{ getTotalStudyHours(day) }}h
+          </div>
+          <div class="overview-hours empty" *ngIf="!hasScheduleForDay(day)">
+            Rest
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>

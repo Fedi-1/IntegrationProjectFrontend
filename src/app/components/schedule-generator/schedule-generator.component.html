@@ -1,0 +1,86 @@
+<div class="schedule-generator-container">
+  <!-- Use shared navigation bar -->
+  <app-student-navbar></app-student-navbar>
+
+  <div class="content-wrapper">
+    <div class="header">
+      <h1>🎓 AI Schedule Generator</h1>
+      <p *ngIf="currentUser">Generate a personalized study schedule for {{ currentUser.firstName }} {{ currentUser.lastName }}</p>
+    </div>
+
+  <div class="alert alert-info">
+    <strong>ℹ️ Info:</strong> Upload your school timetable PDF and we'll automatically generate your revision schedule!
+  </div>
+
+  <form [formGroup]="scheduleForm" (ngSubmit)="onSubmit()" class="schedule-form">
+
+    <!-- PDF Upload Section -->
+    <div class="form-section">
+      <h2>� Upload School Timetable</h2>
+      <p class="section-description">Upload your school's emploi du temps (PDF format)</p>
+
+      <div class="upload-area" [class.has-file]="selectedFile">
+        <input 
+          type="file" 
+          id="pdfFile"
+          accept="application/pdf"
+          (change)="onFileSelected($event)"
+          #fileInput
+          style="display: none;"
+        />
+        
+        <label for="pdfFile" class="upload-label">
+          <div *ngIf="!selectedFile" class="upload-placeholder">
+            <span class="upload-icon">📄</span>
+            <p><strong>Click to upload</strong> or drag and drop</p>
+            <p class="file-hint">PDF format only</p>
+          </div>
+          
+          <div *ngIf="selectedFile" class="file-info">
+            <span class="file-icon">✅</span>
+            <div>
+              <p class="file-name">{{ selectedFile.name }}</p>
+              <p class="file-size">{{ formatFileSize(selectedFile.size) }}</p>
+            </div>
+            <button type="button" class="btn-remove-file" (click)="removeFile($event)">❌</button>
+          </div>
+        </label>
+      </div>
+
+      <small class="helper-text">
+        💡 Your timetable will be scanned to extract subjects and weekly hours
+      </small>
+    </div>
+
+    <!-- Alerts -->
+    <div class="alert alert-error" *ngIf="error">
+      <strong>❌ Error:</strong> {{ error }}
+    </div>
+
+    <div class="alert alert-success" *ngIf="success">
+      <strong>✅ Success:</strong> {{ success }}
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button 
+        type="submit" 
+        class="btn btn-primary" 
+        [disabled]="loading || !selectedFile"
+      >
+        <span *ngIf="!loading">🤖 Generate AI Schedule from PDF</span>
+        <span *ngIf="loading">⏳ Generating...</span>
+      </button>
+
+      <button 
+        type="button" 
+        class="btn btn-secondary" 
+        (click)="resetForm()"
+        [disabled]="loading"
+      >
+        🔄 Reset
+      </button>
+    </div>
+  </form>
+  </div>
+</div>

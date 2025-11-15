@@ -1,0 +1,158 @@
+<!-- Professional Parent Navigation Bar -->
+<nav class="parent-navbar">
+  <div class="navbar-content">
+    <!-- Logo Section -->
+    <div class="navbar-brand" (click)="goToDashboard()">
+      <span class="brand-icon">👨‍👩‍👧‍👦</span>
+      <span class="brand-text">Parent Portal</span>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="navbar-links">
+      <a routerLink="/parent-dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-text">Dashboard</span>
+      </a>
+    </div>
+
+    <!-- User Section -->
+    <div class="navbar-user">
+      <button class="settings-btn" (click)="openSettings()" title="Settings">
+        <span class="settings-icon">⚙️</span>
+      </button>
+      
+      <div class="user-profile">
+        <div class="user-avatar">{{ currentUser?.firstName?.charAt(0) }}{{ currentUser?.lastName?.charAt(0) }}</div>
+        <div class="user-details">
+          <span class="user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</span>
+          <span class="user-role">Parent</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" *ngIf="showSettings" (click)="closeSettings()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>⚙️ Settings</h3>
+      <button class="close-btn" (click)="closeSettings()">✕</button>
+    </div>
+    
+    <div class="modal-body">
+      <!-- User Info Section -->
+      <div class="settings-section">
+        <h4>👤 Profile Information</h4>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">Name:</span>
+            <span class="value">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Email:</span>
+            <span class="value">{{ currentUser?.email }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">CIN:</span>
+            <span class="value">{{ currentUser?.cin }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Phone:</span>
+            <span class="value">{{ currentUser?.phoneNumber }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preferences -->
+      <div class="settings-section">
+        <h4>🔔 Preferences</h4>
+        <div class="preferences">
+          <label class="toggle-option">
+            <input type="checkbox" [(ngModel)]="preferences.notifications">
+            <span>Enable Notifications</span>
+          </label>
+          <label class="toggle-option">
+            <input type="checkbox" [(ngModel)]="preferences.emailReminders">
+            <span>Email Reminders</span>
+          </label>
+          <label class="toggle-option">
+            <input type="checkbox" [(ngModel)]="preferences.darkMode">
+            <span>Dark Mode</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Security -->
+      <div class="settings-section">
+        <h4>🔒 Security</h4>
+        <button class="action-btn" (click)="openChangePassword()">
+          Change Password
+        </button>
+      </div>
+
+      <!-- Actions -->
+      <div class="settings-section">
+        <button class="logout-btn" (click)="logout()">
+          🚪 Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal-overlay" *ngIf="showChangePassword" (click)="closeChangePassword()">
+  <div class="modal-content small" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>🔒 Change Password</h3>
+      <button class="close-btn" (click)="closeChangePassword()">✕</button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="password-form">
+        <div class="form-group">
+          <label>Current Password</label>
+          <input 
+            type="password" 
+            [(ngModel)]="changePasswordForm.currentPassword"
+            placeholder="Enter current password"
+            class="form-input"
+          >
+        </div>
+        
+        <div class="form-group">
+          <label>New Password</label>
+          <input 
+            type="password" 
+            [(ngModel)]="changePasswordForm.newPassword"
+            placeholder="Enter new password (min 6 characters)"
+            class="form-input"
+          >
+        </div>
+        
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input 
+            type="password" 
+            [(ngModel)]="changePasswordForm.confirmPassword"
+            placeholder="Confirm new password"
+            class="form-input"
+          >
+        </div>
+
+        <div class="error-message" *ngIf="passwordError">
+          {{ passwordError }}
+        </div>
+        
+        <div class="success-message" *ngIf="passwordSuccess">
+          {{ passwordSuccess }}
+        </div>
+
+        <button class="submit-btn" (click)="changePassword()">
+          Change Password
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

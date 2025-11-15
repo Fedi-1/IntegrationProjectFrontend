@@ -1,0 +1,132 @@
+<div class="quiz-history-container">
+  <!-- Header -->
+  <div class="header">
+    <button class="back-button" (click)="goBack()">
+      ← Back to Dashboard
+    </button>
+    <h1>📊 Quiz History</h1>
+    <p>View all your completed quizzes and track your progress</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading quiz history...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-message">
+    {{ error }}
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!loading && !error" class="content">
+    
+    <!-- Statistics Summary -->
+    <div class="stats-summary">
+      <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div class="stat-info">
+          <h3>{{ filteredQuizzes.length }}</h3>
+          <p>Total Quizzes</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-info">
+          <h3>{{ calculateAverageScore() }}%</h3>
+          <p>Average Score</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🎯</div>
+        <div class="stat-info">
+          <h3>{{ availableSubjects.length }}</h3>
+          <p>Subjects Covered</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters & Sorting -->
+    <div class="controls">
+      <div class="filter-section">
+        <label for="subject-filter">Filter by Subject:</label>
+        <select id="subject-filter" [(ngModel)]="selectedSubject" class="filter-select">
+          <option value="all">All Subjects</option>
+          <option *ngFor="let subject of availableSubjects" [value]="subject">
+            {{ subject }}
+          </option>
+        </select>
+      </div>
+
+      <div class="sort-section">
+        <button 
+          class="sort-button"
+          [class.active]="sortBy === 'date'"
+          (click)="onSortChange('date')">
+          📅 Date 
+          <span *ngIf="sortBy === 'date'">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
+        </button>
+        <button 
+          class="sort-button"
+          [class.active]="sortBy === 'score'"
+          (click)="onSortChange('score')">
+          📊 Score 
+          <span *ngIf="sortBy === 'score'">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredQuizzes.length === 0" class="empty-state">
+      <div class="empty-icon">📭</div>
+      <h3>No Quizzes Found</h3>
+      <p *ngIf="selectedSubject === 'all'">You haven't completed any quizzes yet. Take your first quiz to get started!</p>
+      <p *ngIf="selectedSubject !== 'all'">No quizzes found for {{ selectedSubject }}. Try selecting a different subject.</p>
+      <button class="primary-button" (click)="goToQuiz()">
+        Take a Quiz
+      </button>
+    </div>
+
+    <!-- Quiz List -->
+    <div *ngIf="filteredQuizzes.length > 0" class="quiz-list">
+      <div 
+        *ngFor="let quiz of filteredQuizzes; let i = index" 
+        class="quiz-card"
+        (click)="viewQuizDetails(quiz.id)">
+        
+        <div class="quiz-header">
+          <div class="quiz-number">#{{ filteredQuizzes.length - i }}</div>
+          <div class="quiz-score" [class]="getScoreClass(quiz.score)">
+            <span class="score-emoji">{{ getScoreEmoji(quiz.score) }}</span>
+            <span class="score-value">{{ quiz.score | number:'1.0-0' }}%</span>
+          </div>
+        </div>
+
+        <div class="quiz-body">
+          <h3 class="quiz-subject">{{ quiz.subject }}</h3>
+          <p class="quiz-topic">{{ quiz.topic }}</p>
+
+          <div class="quiz-details">
+            <div class="detail-item">
+              <span class="detail-icon">✅</span>
+              <span>{{ quiz.correctAnswers }}/{{ quiz.totalQuestions }} correct</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">📅</span>
+              <span>{{ formatDate(quiz.completedAt) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-footer">
+          <button class="view-button">
+            👁️ View Details & Review Answers
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

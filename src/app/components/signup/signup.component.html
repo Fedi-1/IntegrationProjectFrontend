@@ -1,0 +1,201 @@
+<div class="signup-container">
+  <div class="signup-card">
+    <div class="signup-header">
+      <h1>Create Account</h1>
+      <p>Join us today and start your learning journey</p>
+    </div>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
+      <!-- Name Fields -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name *</label>
+          <input
+            type="text"
+            id="firstName"
+            formControlName="firstName"
+            placeholder="Enter first name"
+            [class.error]="firstName?.invalid && firstName?.touched"
+          />
+          <div class="error-message" *ngIf="firstName?.invalid && firstName?.touched">
+            <span *ngIf="firstName?.errors?.['required']">First name is required</span>
+            <span *ngIf="firstName?.errors?.['minlength']">Must be at least 2 characters</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last Name *</label>
+          <input
+            type="text"
+            id="lastName"
+            formControlName="lastName"
+            placeholder="Enter last name"
+            [class.error]="lastName?.invalid && lastName?.touched"
+          />
+          <div class="error-message" *ngIf="lastName?.invalid && lastName?.touched">
+            <span *ngIf="lastName?.errors?.['required']">Last name is required</span>
+            <span *ngIf="lastName?.errors?.['minlength']">Must be at least 2 characters</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Email Address *</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          placeholder="Enter your email"
+          [class.error]="email?.invalid && email?.touched"
+        />
+        <div class="error-message" *ngIf="email?.invalid && email?.touched">
+          <span *ngIf="email?.errors?.['required']">Email is required</span>
+          <span *ngIf="email?.errors?.['email']">Please enter a valid email</span>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">Password *</label>
+        <div class="password-input">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            formControlName="password"
+            placeholder="Enter your password"
+            [class.error]="password?.invalid && password?.touched"
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="togglePasswordVisibility()"
+          >
+            {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+          </button>
+        </div>
+        <div class="error-message" *ngIf="password?.invalid && password?.touched">
+          <span *ngIf="password?.errors?.['required']">Password is required</span>
+          <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</span>
+        </div>
+      </div>
+
+      <!-- CIN and Phone -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="cin">CIN *</label>
+          <input
+            type="text"
+            id="cin"
+            formControlName="cin"
+            placeholder="Enter CIN"
+            [class.error]="cin?.invalid && cin?.touched"
+          />
+          <div class="error-message" *ngIf="cin?.invalid && cin?.touched">
+            <span *ngIf="cin?.errors?.['required']">CIN is required</span>
+            <span *ngIf="cin?.errors?.['minlength']">Must be at least 5 characters</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phoneNumber">Phone Number *</label>
+          <input
+            type="tel"
+            id="phoneNumber"
+            formControlName="phoneNumber"
+            placeholder="Enter phone number"
+            [class.error]="phoneNumber?.invalid && phoneNumber?.touched"
+          />
+          <div class="error-message" *ngIf="phoneNumber?.invalid && phoneNumber?.touched">
+            <span *ngIf="phoneNumber?.errors?.['required']">Phone number is required</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Age and Role -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="age">Age *</label>
+          <input
+            type="number"
+            id="age"
+            formControlName="age"
+            placeholder="Enter age"
+            [class.error]="age?.invalid && age?.touched"
+          />
+          <div class="error-message" *ngIf="age?.invalid && age?.touched">
+            <span *ngIf="age?.errors?.['required']">Age is required</span>
+            <span *ngIf="age?.errors?.['min'] || age?.errors?.['max']">Invalid age</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="role">Role *</label>
+          <select
+            id="role"
+            formControlName="role"
+            [class.error]="role?.invalid && role?.touched"
+          >
+            <option *ngFor="let role of roles" [value]="role.value">
+              {{ role.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Student-specific fields -->
+      <div *ngIf="isStudent()" class="student-fields">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="parentCin">Parent CIN *</label>
+            <input
+              type="text"
+              id="parentCin"
+              formControlName="parentCin"
+              placeholder="Enter parent's CIN"
+              [class.error]="parentCin?.invalid && parentCin?.touched"
+            />
+            <div class="error-message" *ngIf="parentCin?.invalid && parentCin?.touched">
+              <span *ngIf="parentCin?.errors?.['required']">Parent CIN is required for students</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="maxStudyDuration">Max Study Duration (mins) *</label>
+            <input
+              type="number"
+              id="maxStudyDuration"
+              formControlName="maxStudyDuration"
+              placeholder="e.g., 90"
+              [class.error]="maxStudyDuration?.invalid && maxStudyDuration?.touched"
+            />
+            <div class="error-message" *ngIf="maxStudyDuration?.invalid && maxStudyDuration?.touched">
+              <span *ngIf="maxStudyDuration?.errors?.['required']">Duration is required</span>
+              <span *ngIf="maxStudyDuration?.errors?.['min']">Minimum 30 minutes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Alert -->
+      <div class="alert alert-error" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="loading"
+      >
+        <span *ngIf="!loading">Create Account</span>
+        <span *ngIf="loading">Creating Account...</span>
+      </button>
+
+      <!-- Login Link -->
+      <div class="form-footer">
+        <p>Already have an account? <a routerLink="/login">Sign in here</a></p>
+      </div>
+    </form>
+  </div>
+</div>

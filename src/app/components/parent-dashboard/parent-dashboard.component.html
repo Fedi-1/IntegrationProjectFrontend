@@ -1,0 +1,265 @@
+<div class="dashboard-wrapper">
+  <!-- Parent Navigation Bar -->
+  <app-parent-navbar></app-parent-navbar>
+
+  <div class="dashboard-container">
+    
+    <!-- Welcome Banner -->
+    <div class="welcome-banner" *ngIf="currentUser">
+      <div class="welcome-content">
+        <h2 class="welcome-title">Welcome, {{ currentUser.firstName }}! 👨‍👩‍👧‍👦</h2>
+        <p class="welcome-subtitle">Monitor your children's progress and schedules</p>
+      </div>
+      <div class="welcome-illustration">
+        <div class="floating-icon">📚</div>
+        <div class="floating-icon delay-1">🎯</div>
+        <div class="floating-icon delay-2">✨</div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Loading your children's data...</p>
+    </div>
+
+    <!-- No Children State -->
+    <div class="empty-state" *ngIf="!loading && children.length === 0">
+      <div class="empty-icon">👨‍👩‍👧‍👦</div>
+      <h3>No Children Found</h3>
+      <p>No students are linked to your account yet.</p>
+      <p class="hint">Ask your children to use your CIN when creating their accounts.</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" *ngIf="!loading && children.length > 0">
+      
+      <!-- Children Selector -->
+      <div class="children-selector">
+        <h3 class="selector-title">Select Child:</h3>
+        <div class="children-cards">
+          <div 
+            *ngFor="let child of children" 
+            class="child-card"
+            [class.active]="selectedChild?.cin === child.cin"
+            (click)="selectChild(child)"
+          >
+            <div class="child-avatar">{{ child.firstName.charAt(0) }}{{ child.lastName.charAt(0) }}</div>
+            <div class="child-info">
+              <h4>{{ child.firstName }} {{ child.lastName }}</h4>
+              <p>{{ child.age }} years old</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selected Child Content -->
+      <div class="child-content" *ngIf="selectedChild">
+        
+        <!-- Alerts Section -->
+        <div class="alerts-section" *ngIf="childAlerts.length > 0">
+          <h3 class="section-title">� Alerts & Notifications</h3>
+          <div class="alerts-grid">
+            <div 
+              *ngFor="let alert of childAlerts" 
+              class="alert-card"
+              [ngClass]="getAlertClass(alert.type)"
+            >
+              <div class="alert-header">
+                <span class="alert-icon">⚠️</span>
+                <strong>{{ alert.title }}</strong>
+              </div>
+              <p class="alert-message">{{ alert.message }}</p>
+              <small class="alert-time">{{ formatTime(alert.timestamp) }}</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- View Tabs -->
+        <div class="view-tabs">
+          <button 
+            class="tab-button" 
+            [class.active]="activeView === 'today'"
+            (click)="setActiveView('today')"
+          >
+            <span class="tab-icon">☀️</span>
+            <span>Today's Tasks</span>
+          </button>
+          <button 
+            class="tab-button" 
+            [class.active]="activeView === 'schedule'"
+            (click)="setActiveView('schedule')"
+          >
+            <span class="tab-icon">📅</span>
+            <span>Weekly Schedule</span>
+          </button>
+          <button 
+            class="tab-button" 
+            [class.active]="activeView === 'performance'"
+            (click)="setActiveView('performance')"
+          >
+            <span class="tab-icon">📊</span>
+            <span>Performance</span>
+          </button>
+        </div>
+
+        <!-- Today's Schedule View -->
+        <div class="content-view" *ngIf="activeView === 'today' && childTodaySchedule">
+          <div class="stats-cards">
+            <div class="stat-card green">
+              <div class="stat-icon">✅</div>
+              <div class="stat-details">
+                <h4>{{ childTodaySchedule.stats?.completed || 0 }}</h4>
+                <p>Completed</p>
+              </div>
+            </div>
+            <div class="stat-card blue">
+              <div class="stat-icon">📝</div>
+              <div class="stat-details">
+                <h4>{{ childTodaySchedule.stats?.total || 0 }}</h4>
+                <p>Total Tasks</p>
+              </div>
+            </div>
+            <div class="stat-card orange">
+              <div class="stat-icon">⏱️</div>
+              <div class="stat-details">
+                <h4>{{ childTodaySchedule.stats?.remaining || 0 }}</h4>
+                <p>Remaining</p>
+              </div>
+            </div>
+            <div class="stat-card purple">
+              <div class="stat-icon">📈</div>
+              <div class="stat-details">
+                <h4>{{ (childTodaySchedule.stats?.completionPercentage || 0).toFixed(0) }}%</h4>
+                <p>Completion</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="schedule-list">
+            <h3 class="list-title">{{ childTodaySchedule.day }}'s Schedule</h3>
+            <div class="schedule-items">
+              <div 
+                *ngFor="let item of childTodaySchedule.schedules" 
+                class="schedule-item"
+                [class.completed]="item.completed"
+              >
+                <div class="item-status">
+                  <span class="status-icon" *ngIf="item.completed">✅</span>
+                  <span class="status-icon pending" *ngIf="!item.completed">⏳</span>
+                </div>
+                <div class="item-content">
+                  <div class="item-header">
+                    <h4>{{ item.activity }}</h4>
+                    <span class="item-time">{{ item.timeSlot }}</span>
+                  </div>
+                  <p class="item-subject" *ngIf="item.subjectName">📚 {{ item.subjectName }}</p>
+                  <p class="item-duration">⏱️ {{ item.durationMinutes }} minutes</p>
+                  <p class="item-completed" *ngIf="item.completed && item.completedAt">
+                    ✓ Completed at {{ formatTime(item.completedAt) }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weekly Schedule View -->
+        <div class="content-view" *ngIf="activeView === 'schedule' && childSchedule">
+          <h3 class="view-title">📅 Weekly Schedule</h3>
+          <div class="week-schedule">
+            <div *ngFor="let day of getObjectKeys(childSchedule.weekSchedule)" class="day-schedule">
+              <h4 class="day-title">{{ day }}</h4>
+              <div class="day-items">
+                <div *ngFor="let item of childSchedule.weekSchedule[day]" class="day-item">
+                  <span class="time-badge">{{ item.timeSlot }}</span>
+                  <div class="item-details">
+                    <strong>{{ item.activity }}</strong>
+                    <small *ngIf="item.subjectName">{{ item.subjectName }}</small>
+                  </div>
+                  <span class="duration-badge">{{ item.durationMinutes }}min</span>
+                </div>
+                <div *ngIf="childSchedule.weekSchedule[day].length === 0" class="empty-day">
+                  No activities scheduled
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Performance View -->
+        <div class="content-view" *ngIf="activeView === 'performance' && childPerformance">
+          <h3 class="view-title">📊 Academic Performance</h3>
+          
+          <!-- Overall Stats -->
+          <div class="performance-stats">
+            <div class="perf-card">
+              <div class="perf-icon">🎯</div>
+              <div class="perf-details">
+                <h4>{{ (childPerformance.overallStats?.averageScore || 0).toFixed(1) }}%</h4>
+                <p>Average Score</p>
+              </div>
+            </div>
+            <div class="perf-card">
+              <div class="perf-icon">📝</div>
+              <div class="perf-details">
+                <h4>{{ childPerformance.overallStats?.totalQuizzes || 0 }}</h4>
+                <p>Total Quizzes</p>
+              </div>
+            </div>
+            <div class="perf-card">
+              <div class="perf-icon">📚</div>
+              <div class="perf-details">
+                <h4>{{ childPerformance.overallStats?.totalSubjects || 0 }}</h4>
+                <p>Subjects</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subject Performance -->
+          <div class="subject-performance" *ngIf="childPerformance.subjectPerformance">
+            <h4 class="subsection-title">Performance by Subject</h4>
+            <div class="subject-bars">
+              <div *ngFor="let subject of getObjectKeys(childPerformance.subjectPerformance)" class="subject-bar">
+                <div class="subject-name">{{ subject }}</div>
+                <div class="bar-container">
+                  <div class="bar-fill" [style.width.%]="childPerformance.subjectPerformance[subject]"></div>
+                  <span class="bar-label">{{ childPerformance.subjectPerformance[subject].toFixed(1) }}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Difficulties Alert -->
+          <div class="difficulties-alert" *ngIf="childPerformance.difficulties?.length > 0">
+            <h4>⚠️ Areas Needing Attention</h4>
+            <div class="difficulty-tags">
+              <span *ngFor="let subject of childPerformance.difficulties" class="difficulty-tag">
+                {{ subject }}
+              </span>
+            </div>
+            <p class="difficulty-hint">These subjects have an average score below 60%</p>
+          </div>
+
+          <!-- Recent Quizzes -->
+          <div class="recent-quizzes" *ngIf="childPerformance.recentQuizzes?.length > 0">
+            <h4 class="subsection-title">Recent Quiz Results</h4>
+            <div class="quiz-list">
+              <div *ngFor="let quiz of childPerformance.recentQuizzes" class="quiz-item">
+                <div class="quiz-info">
+                  <strong>{{ quiz.subject }} - {{ quiz.topic }}</strong>
+                  <small>{{ formatTime(quiz.completedAt) }}</small>
+                </div>
+                <div class="quiz-score" [class.good]="quiz.score >= 70" [class.medium]="quiz.score >= 50 && quiz.score < 70" [class.poor]="quiz.score < 50">
+                  {{ quiz.score?.toFixed(1) }}%
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

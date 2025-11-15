@@ -1,0 +1,138 @@
+<div class="today-container">
+  <div class="header">
+    <button class="back-btn" (click)="goBack()">← Back to Dashboard</button>
+    <h1>☀️ Today's Study Plan</h1>
+    <p class="date-info">{{ currentDay }}, {{ currentDate }}</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loadingToday" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading today's schedule...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!loadingToday">
+    
+    <!-- Progress Stats -->
+    <div class="stats-section" *ngIf="todayStats && todaySchedule.length > 0">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📚</div>
+          <div class="stat-content">
+            <span class="stat-label">Total Sessions</span>
+            <span class="stat-value">{{ todayStats.total }}</span>
+          </div>
+        </div>
+        
+        <div class="stat-card completed">
+          <div class="stat-icon">✅</div>
+          <div class="stat-content">
+            <span class="stat-label">Completed</span>
+            <span class="stat-value">{{ todayStats.completed }}</span>
+          </div>
+        </div>
+        
+        <div class="stat-card remaining">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-content">
+            <span class="stat-label">Remaining</span>
+            <span class="stat-value">{{ todayStats.remaining }}</span>
+          </div>
+        </div>
+        
+        <div class="stat-card progress">
+          <div class="stat-icon">📊</div>
+          <div class="stat-content">
+            <span class="stat-label">Progress</span>
+            <span class="stat-value">{{ todayStats.completionPercentage | number:'1.0-0' }}%</span>
+          </div>
+        </div>
+        
+        <div class="stat-card late" *ngIf="todayStats.late > 0">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-content">
+            <span class="stat-label">Completed Late</span>
+            <span class="stat-value">{{ todayStats.late }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-section">
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" [style.width.%]="todayStats.completionPercentage">
+            <span class="progress-text">{{ todayStats.completionPercentage | number:'1.0-0' }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule Items -->
+    <div class="schedule-section" *ngIf="todaySchedule.length > 0">
+      <h2>📋 Your Sessions</h2>
+      <p class="info-text">
+        💡 Sessions marked after 5 minutes of the scheduled end time will be shown as late
+      </p>
+      
+      <div class="schedule-list">
+        <div *ngFor="let item of todaySchedule; let i = index" 
+             class="schedule-item"
+             [class.completed]="item.completed"
+             [class.late]="item.isLate">
+          
+          <div class="item-number">{{ i + 1 }}</div>
+          
+          <!-- Late Badge -->
+          <div class="late-badge" *ngIf="item.isLate">
+            ⚠️ LATE
+          </div>
+          
+          <div class="schedule-time">
+            <div class="time-slot">⏰ {{ item.timeSlot }}</div>
+            <div class="duration">{{ item.durationMinutes }} min</div>
+          </div>
+
+          <div class="schedule-content">
+            <div class="schedule-header">
+              <h3>{{ item.subjectName || 'Study Session' }}</h3>
+              <span class="activity-badge">{{ item.activity }}</span>
+            </div>
+            <p class="schedule-topic">📖 {{ item.topic }}</p>
+            <p class="completed-time" *ngIf="item.completed && item.completedAt">
+              Completed at {{ item.completedAt | date:'short' }}
+            </p>
+          </div>
+
+          <div class="schedule-action">
+            <button 
+              *ngIf="!item.completed"
+              class="complete-btn"
+              (click)="markAsCompleted(item.id)">
+              <span class="btn-icon">✓</span>
+              <span class="btn-text">Mark Complete</span>
+            </button>
+            <button 
+              *ngIf="item.completed"
+              class="completed-btn"
+              (click)="markAsUncompleted(item.id)">
+              <span class="btn-icon">✓</span>
+              <span class="btn-text">Completed</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="todaySchedule.length === 0">
+      <div class="empty-icon">😴</div>
+      <h2>No sessions scheduled for today</h2>
+      <p>Enjoy your break or study at your own pace!</p>
+      <button class="primary-btn" (click)="goBack()">
+        Go to Dashboard
+      </button>
+    </div>
+
+  </div>
+</div>

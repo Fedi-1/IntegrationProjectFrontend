@@ -1,0 +1,178 @@
+<!-- Professional Navigation Bar -->
+<nav class="student-navbar">
+  <div class="navbar-content">
+    <!-- Logo Section -->
+    <div class="navbar-brand" (click)="goToDashboard()">
+      <span class="brand-icon">📚</span>
+      <span class="brand-text">StudyPlan AI</span>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="navbar-links">
+      <a routerLink="/student" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-text">Dashboard</span>
+      </a>
+      <a routerLink="/today-schedule" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">☀️</span>
+        <span class="nav-text">Today</span>
+      </a>
+    </div>
+
+    <!-- User Section -->
+    <div class="navbar-user">
+      <button class="settings-btn" (click)="openSettings()" title="Settings">
+        <span class="settings-icon">⚙️</span>
+      </button>
+      <div class="user-info" *ngIf="currentUser">
+        <div class="user-avatar">{{ currentUser.firstName.charAt(0) }}{{ currentUser.lastName.charAt(0) }}</div>
+        <div class="user-details">
+          <span class="user-name">{{ currentUser.firstName }} {{ currentUser.lastName }}</span>
+          <span class="user-role">Student</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Settings Modal -->
+<div class="settings-modal" *ngIf="showSettings" (click)="closeSettings()">
+  <div class="settings-content" (click)="$event.stopPropagation()">
+    <div class="settings-header">
+      <h2>⚙️ Settings</h2>
+      <button class="close-btn" (click)="closeSettings()">✕</button>
+    </div>
+
+    <div class="settings-body">
+      <!-- Profile Section -->
+      <div class="settings-section">
+        <h3>👤 Profile Information</h3>
+        <div class="profile-info-grid" *ngIf="currentUser">
+          <div class="info-item">
+            <label>Full Name</label>
+            <p>{{ currentUser.firstName }} {{ currentUser.lastName }}</p>
+          </div>
+          <div class="info-item">
+            <label>Email</label>
+            <p>{{ currentUser.email }}</p>
+          </div>
+          <div class="info-item">
+            <label>CIN</label>
+            <p>{{ currentUser.cin }}</p>
+          </div>
+          <div class="info-item">
+            <label>Role</label>
+            <p>Student</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preferences Section -->
+      <div class="settings-section">
+        <h3>🎨 Preferences</h3>
+        <div class="preference-item">
+          <label>
+            <input type="checkbox" [(ngModel)]="preferences.notifications" (change)="savePreferences()">
+            <span>Enable notifications</span>
+          </label>
+        </div>
+        <div class="preference-item">
+          <label>
+            <input type="checkbox" [(ngModel)]="preferences.emailReminders" (change)="savePreferences()">
+            <span>Email reminders for study sessions</span>
+          </label>
+        </div>
+        <div class="preference-item">
+          <label>
+            <input type="checkbox" [(ngModel)]="preferences.darkMode" (change)="toggleDarkMode()">
+            <span>Dark mode (Coming Soon)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Actions Section -->
+      <div class="settings-section">
+        <h3>🔐 Account Actions</h3>
+        <div class="action-buttons">
+          <button class="settings-action-btn change-password" (click)="openChangePassword()">
+            🔑 Change Password
+          </button>
+          <button class="settings-action-btn logout" (click)="logout()">
+            🚪 Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="settings-modal" *ngIf="showChangePassword" (click)="closeChangePassword()">
+  <div class="settings-content change-password-modal" (click)="$event.stopPropagation()">
+    <div class="settings-header">
+      <h2>🔑 Change Password</h2>
+      <button class="close-btn" (click)="closeChangePassword()">✕</button>
+    </div>
+
+    <div class="settings-body">
+      <!-- Success Message -->
+      <div class="alert alert-success" *ngIf="passwordSuccess">
+        <strong>✅ Success:</strong> {{ passwordSuccess }}
+      </div>
+
+      <!-- Error Message -->
+      <div class="alert alert-error" *ngIf="passwordError">
+        <strong>❌ Error:</strong> {{ passwordError }}
+      </div>
+
+      <!-- Change Password Form -->
+      <form (ngSubmit)="submitChangePassword()" class="change-password-form">
+        <div class="form-group">
+          <label for="currentPassword">Current Password</label>
+          <input 
+            type="password" 
+            id="currentPassword"
+            [(ngModel)]="changePasswordForm.currentPassword"
+            name="currentPassword"
+            placeholder="Enter your current password"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <input 
+            type="password" 
+            id="newPassword"
+            [(ngModel)]="changePasswordForm.newPassword"
+            name="newPassword"
+            placeholder="Enter new password (min 6 characters)"
+            required
+            minlength="6"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm New Password</label>
+          <input 
+            type="password" 
+            id="confirmPassword"
+            [(ngModel)]="changePasswordForm.confirmPassword"
+            name="confirmPassword"
+            placeholder="Confirm new password"
+            required
+          />
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="closeChangePassword()">
+            Cancel
+          </button>
+          <button type="submit" class="btn-submit">
+            Change Password
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
