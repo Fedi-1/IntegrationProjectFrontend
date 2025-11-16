@@ -175,6 +175,22 @@
             </div>
           </div>
         </div>
+
+        <div class="form-group">
+          <label for="preparationTimeMinutes">Preparation Time (mins) *</label>
+          <input
+            type="number"
+            id="preparationTimeMinutes"
+            formControlName="preparationTimeMinutes"
+            placeholder="e.g., 30"
+            [class.error]="preparationTimeMinutes?.invalid && preparationTimeMinutes?.touched"
+          />
+          <small class="form-hint">Time needed to prepare before each study session</small>
+          <div class="error-message" *ngIf="preparationTimeMinutes?.invalid && preparationTimeMinutes?.touched">
+            <span *ngIf="preparationTimeMinutes?.errors?.['required']">Preparation time is required</span>
+            <span *ngIf="preparationTimeMinutes?.errors?.['min']">Minimum 10 minutes</span>
+          </div>
+        </div>
       </div>
 
       <!-- Error Alert -->

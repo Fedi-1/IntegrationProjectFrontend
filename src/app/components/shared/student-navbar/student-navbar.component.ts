@@ -113,6 +113,11 @@ export class StudentNavbarComponent implements OnInit {
     this.passwordSuccess = '';
   }
 
+  // Change password method (matches parent navbar style)
+  changePassword() {
+    this.submitChangePassword();
+  }
+
   // Change password submission
   submitChangePassword() {
     this.passwordError = '';
@@ -187,9 +192,7 @@ export class StudentNavbarComponent implements OnInit {
   }
 
   logout() {
-    if (confirm('Are you sure you want to logout?')) {
-      this.authService.logout();
-      this.router.navigate(['/login']);
-    }
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

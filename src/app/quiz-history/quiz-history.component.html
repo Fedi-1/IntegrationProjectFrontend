@@ -1,12 +1,11 @@
-<div class="quiz-history-container">
-  <!-- Header -->
-  <div class="header">
-    <button class="back-button" (click)="goBack()">
-      ← Back to Dashboard
-    </button>
-    <h1>📊 Quiz History</h1>
-    <p>View all your completed quizzes and track your progress</p>
-  </div>
+<div class="quiz-history-wrapper">
+  <app-student-navbar></app-student-navbar>
+  <div class="quiz-history-container">
+    <!-- Header -->
+    <div class="header">
+      <h1>📊 Quiz History</h1>
+      <p>View all your completed quizzes and track your progress</p>
+    </div>
 
   <!-- Loading State -->
   <div *ngIf="loading" class="loading">
@@ -128,5 +127,6 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 </div>

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { StudentNavbarComponent } from '../components/shared/student-navbar/student-navbar.component';
 
 interface QuizHistoryItem {
   id: number;
@@ -19,7 +20,7 @@ interface QuizHistoryItem {
 @Component({
   selector: 'app-quiz-history',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, StudentNavbarComponent],
   templateUrl: './quiz-history.component.html',
   styleUrls: ['./quiz-history.component.css']
 })

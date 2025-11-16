@@ -45,7 +45,8 @@ export class SignupComponent implements OnInit {
       age: ['', [Validators.required, Validators.min(1), Validators.max(150)]],
       role: ['ETUDIANT', [Validators.required]],
       parentCin: [''],
-      maxStudyDuration: [90]
+      maxStudyDuration: [90],
+      preparationTimeMinutes: [30]
     });
 
     // Watch role changes to handle conditional validation
@@ -53,12 +54,15 @@ export class SignupComponent implements OnInit {
       if (role === 'ETUDIANT') {
         this.signupForm.get('parentCin')?.setValidators([Validators.required]);
         this.signupForm.get('maxStudyDuration')?.setValidators([Validators.required, Validators.min(30)]);
+        this.signupForm.get('preparationTimeMinutes')?.setValidators([Validators.required, Validators.min(10)]);
       } else {
         this.signupForm.get('parentCin')?.clearValidators();
         this.signupForm.get('maxStudyDuration')?.clearValidators();
+        this.signupForm.get('preparationTimeMinutes')?.clearValidators();
       }
       this.signupForm.get('parentCin')?.updateValueAndValidity();
       this.signupForm.get('maxStudyDuration')?.updateValueAndValidity();
+      this.signupForm.get('preparationTimeMinutes')?.updateValueAndValidity();
     });
   }
 
@@ -85,6 +89,7 @@ export class SignupComponent implements OnInit {
       if (formValue.role === 'ETUDIANT') {
         request.parentCin = formValue.parentCin;
         request.maxStudyDuration = formValue.maxStudyDuration;
+        request.preparationTimeMinutes = formValue.preparationTimeMinutes;
       }
 
       console.log('Signup request:', request); // Debug log
@@ -155,4 +160,5 @@ export class SignupComponent implements OnInit {
   get role() { return this.signupForm.get('role'); }
   get parentCin() { return this.signupForm.get('parentCin'); }
   get maxStudyDuration() { return this.signupForm.get('maxStudyDuration'); }
+  get preparationTimeMinutes() { return this.signupForm.get('preparationTimeMinutes'); }
 }

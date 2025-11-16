@@ -1,5 +1,11 @@
-<div class="quiz-container">
-  <h2>Quiz Generator</h2>
+<div class="quiz-wrapper">
+  <!-- Use shared navigation bar -->
+  <app-student-navbar></app-student-navbar>
+
+  <div class="quiz-container">
+    <div class="header">
+      <h2>📝 Quiz Generator</h2>
+    </div>
 
   <!-- Quiz Setup Form -->
   <div *ngIf="!quiz && !loading" class="setup-form">
@@ -160,5 +166,6 @@
         Take Another Quiz
       </button>
     </div>
+  </div>
   </div>
 </div>

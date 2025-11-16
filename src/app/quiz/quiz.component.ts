@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { StudentNavbarComponent } from '../components/shared/student-navbar/student-navbar.component';
 
 interface QuizQuestion {
   id?: number;
@@ -30,7 +31,7 @@ interface Quiz {
 @Component({
   selector: 'app-quiz',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, StudentNavbarComponent],
   templateUrl: './quiz.component.html',
   styleUrls: ['./quiz.component.css']
 })
@@ -59,6 +60,10 @@ export class QuizComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router
   ) {}
+
+  goBack(): void {
+    this.router.navigate(['/dashboard']);
+  }
 
   ngOnInit(): void {
     // Get student CIN from auth service

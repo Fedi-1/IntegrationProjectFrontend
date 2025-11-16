@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { UserDTO } from '../../models/auth.model';
+import { StudentNavbarComponent } from '../shared/student-navbar/student-navbar.component';
 
 interface TodayScheduleItem {
   id: number;
@@ -34,7 +35,7 @@ interface TodayScheduleResponse {
 @Component({
   selector: 'app-today-schedule',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, StudentNavbarComponent],
   templateUrl: './today-schedule.component.html',
   styleUrl: './today-schedule.component.css'
 })

@@ -14,6 +14,7 @@ export interface SignupRequest {
   role: 'ETUDIANT' | 'PARENT' | 'ADMINISTRATOR';
   parentCin?: string;
   maxStudyDuration?: number;
+  preparationTimeMinutes?: number;
 }
 
 export interface UserDTO {

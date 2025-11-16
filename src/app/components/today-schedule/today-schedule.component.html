@@ -1,9 +1,12 @@
 <div class="today-container">
-  <div class="header">
-    <button class="back-btn" (click)="goBack()">← Back to Dashboard</button>
-    <h1>☀️ Today's Study Plan</h1>
-    <p class="date-info">{{ currentDay }}, {{ currentDate }}</p>
-  </div>
+  <!-- Use shared navigation bar -->
+  <app-student-navbar></app-student-navbar>
+
+  <div class="content-wrapper">
+    <div class="header">
+      <h1>☀️ Today's Study Plan</h1>
+      <p class="date-info">{{ currentDay }}, {{ currentDate }}</p>
+    </div>
 
   <!-- Loading State -->
   <div *ngIf="loadingToday" class="loading-state">
@@ -129,10 +132,8 @@
       <div class="empty-icon">😴</div>
       <h2>No sessions scheduled for today</h2>
       <p>Enjoy your break or study at your own pace!</p>
-      <button class="primary-btn" (click)="goBack()">
-        Go to Dashboard
-      </button>
     </div>
 
+  </div>
   </div>
 </div>
