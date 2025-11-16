@@ -61,7 +61,7 @@ export class TodayScheduleComponent implements OnInit {
 
   loadTodaySchedule(cin: string) {
     this.loadingToday = true;
-    this.http.get<TodayScheduleResponse>(`http://localhost:5069/api/daily-schedule/today/${cin}`)
+    this.http.get<TodayScheduleResponse>(`https://integrationprojectbackend.onrender.com/api/daily-schedule/today/${cin}`)
       .subscribe({
         next: (response) => {
           if (response.success) {
@@ -80,7 +80,7 @@ export class TodayScheduleComponent implements OnInit {
   }
 
   markAsCompleted(scheduleId: number) {
-    this.http.post(`http://localhost:5069/api/daily-schedule/complete/${scheduleId}`, {})
+    this.http.post(`https://integrationprojectbackend.onrender.com/api/daily-schedule/complete/${scheduleId}`, {})
       .subscribe({
         next: () => {
           const item = this.todaySchedule.find(s => s.id === scheduleId);
@@ -98,7 +98,7 @@ export class TodayScheduleComponent implements OnInit {
   }
 
   markAsUncompleted(scheduleId: number) {
-    this.http.post(`http://localhost:5069/api/daily-schedule/uncomplete/${scheduleId}`, {})
+    this.http.post(`https://integrationprojectbackend.onrender.com/api/daily-schedule/uncomplete/${scheduleId}`, {})
       .subscribe({
         next: () => {
           const item = this.todaySchedule.find(s => s.id === scheduleId);

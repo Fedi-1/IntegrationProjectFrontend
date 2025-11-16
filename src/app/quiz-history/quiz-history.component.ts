@@ -59,7 +59,7 @@ export class QuizHistoryComponent implements OnInit {
     this.loading = true;
     this.error = '';
 
-    this.http.get<any>(`http://localhost:5069/api/quiz/history/${this.studentCin}`)
+    this.http.get<any>(`https://integrationprojectbackend.onrender.com/api/quiz/history/${this.studentCin}`)
       .subscribe({
         next: (response) => {
           if (response.success) {

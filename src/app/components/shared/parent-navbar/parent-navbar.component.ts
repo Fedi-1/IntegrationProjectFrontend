@@ -107,7 +107,7 @@ export class ParentNavbarComponent implements OnInit {
       newPassword: this.changePasswordForm.newPassword
     };
 
-    this.http.post<any>('http://localhost:5069/api/auth/change-password', request)
+    this.http.post<any>('https://integrationprojectbackend.onrender.com/api/auth/change-password', request)
       .subscribe({
         next: (response) => {
           if (response.success) {

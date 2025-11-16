@@ -12,7 +12,7 @@ import {
   providedIn: 'root'
 })
 export class ScheduleService {
-  private apiUrl = 'http://localhost:5069/api/schedule';
+  private apiUrl = 'https://integrationprojectbackend.onrender.com/api/schedule';
 
   constructor(private http: HttpClient) {}
 

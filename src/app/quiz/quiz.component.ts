@@ -83,7 +83,7 @@ export class QuizComponent implements OnInit {
   
   loadSubjects(): void {
     this.loadingSubjects = true;
-    this.http.get<any>(`http://localhost:5069/api/quiz/subjects/${this.studentCin}`)
+    this.http.get<any>(`https://integrationprojectbackend.onrender.com/api/quiz/subjects/${this.studentCin}`)
       .subscribe({
         next: (response) => {
           if (response.success && response.subjects) {
@@ -121,9 +121,9 @@ export class QuizComponent implements OnInit {
     };
 
     console.log('Generating quiz for student CIN:', this.studentCin);
-    console.log('Request URL:', `http://localhost:5069/api/quiz/generate/${this.studentCin}`);
+    console.log('Request URL:', `https://integrationprojectbackend.onrender.com/api/quiz/generate/${this.studentCin}`);
 
-    this.http.post<any>(`http://localhost:5069/api/quiz/generate/${this.studentCin}`, requestBody)
+    this.http.post<any>(`https://integrationprojectbackend.onrender.com/api/quiz/generate/${this.studentCin}`, requestBody)
       .subscribe({
         next: (response) => {
           console.log('Quiz generation response:', response);
@@ -198,7 +198,7 @@ export class QuizComponent implements OnInit {
       answers: formattedAnswers
     };
 
-    this.http.post<any>(`http://localhost:5069/api/quiz/submit/${this.quiz.quizId}`, requestBody)
+    this.http.post<any>(`https://integrationprojectbackend.onrender.com/api/quiz/submit/${this.quiz.quizId}`, requestBody)
       .subscribe({
         next: (response) => {
           console.log('=== SUBMIT RESPONSE ===', response);
@@ -229,7 +229,7 @@ export class QuizComponent implements OnInit {
   }
 
   loadQuizResult(quizId: number): void {
-    this.http.get<any>(`http://localhost:5069/api/quiz/result/${quizId}`)
+    this.http.get<any>(`https://integrationprojectbackend.onrender.com/api/quiz/result/${quizId}`)
       .subscribe({
         next: (response) => {
           console.log('=== QUIZ RESULT RESPONSE ===');
@@ -273,7 +273,7 @@ export class QuizComponent implements OnInit {
   // Load an existing quiz result from history
   loadExistingQuizResult(quizId: number): void {
     this.loading = true;
-    this.http.get<any>(`http://localhost:5069/api/quiz/result/${quizId}`)
+    this.http.get<any>(`https://integrationprojectbackend.onrender.com/api/quiz/result/${quizId}`)
       .subscribe({
         next: (response) => {
           console.log('Loading existing quiz result:', response);
@@ -322,7 +322,7 @@ export class QuizComponent implements OnInit {
       quizId: this.quiz.quizId
     };
 
-    this.http.post<any>(`http://localhost:5069/api/quiz/complete-revision/${this.studentCin}`, requestBody)
+    this.http.post<any>(`https://integrationprojectbackend.onrender.com/api/quiz/complete-revision/${this.studentCin}`, requestBody)
       .subscribe({
         next: (response) => {
           if (response.success) {

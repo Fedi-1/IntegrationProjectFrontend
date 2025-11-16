@@ -72,7 +72,7 @@ export class ParentDashboardComponent implements OnInit {
 
   loadChildren(parentCin: string) {
     this.loading = true;
-    this.http.get<any>(`http://localhost:5069/api/parent/${parentCin}/children`)
+    this.http.get<any>(`https://integrationprojectbackend.onrender.com/api/parent/${parentCin}/children`)
       .subscribe({
         next: (response) => {
           if (response.success) {
@@ -97,7 +97,7 @@ export class ParentDashboardComponent implements OnInit {
 
   loadChildData(childCin: string) {
     // Load today's schedule
-    this.http.get<any>(`http://localhost:5069/api/parent/child/${childCin}/today`)
+    this.http.get<any>(`https://integrationprojectbackend.onrender.com/api/parent/child/${childCin}/today`)
       .subscribe({
         next: (response) => {
           if (response.success) {
@@ -108,7 +108,7 @@ export class ParentDashboardComponent implements OnInit {
       });
 
     // Load full week schedule
-    this.http.get<any>(`http://localhost:5069/api/parent/child/${childCin}/schedule`)
+    this.http.get<any>(`https://integrationprojectbackend.onrender.com/api/parent/child/${childCin}/schedule`)
       .subscribe({
         next: (response) => {
           if (response.success) {
@@ -119,7 +119,7 @@ export class ParentDashboardComponent implements OnInit {
       });
 
     // Load performance data
-    this.http.get<any>(`http://localhost:5069/api/parent/child/${childCin}/performance`)
+    this.http.get<any>(`https://integrationprojectbackend.onrender.com/api/parent/child/${childCin}/performance`)
       .subscribe({
         next: (response) => {
           if (response.success) {
@@ -130,7 +130,7 @@ export class ParentDashboardComponent implements OnInit {
       });
 
     // Load alerts
-    this.http.get<any>(`http://localhost:5069/api/parent/child/${childCin}/alerts`)
+    this.http.get<any>(`https://integrationprojectbackend.onrender.com/api/parent/child/${childCin}/alerts`)
       .subscribe({
         next: (response) => {
           if (response.success) {

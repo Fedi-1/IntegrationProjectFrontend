@@ -148,7 +148,7 @@ export class StudentNavbarComponent implements OnInit {
       newPassword: this.changePasswordForm.newPassword
     };
 
-    this.http.post('http://localhost:5069/api/auth/change-password', changePasswordRequest)
+    this.http.post('https://integrationprojectbackend.onrender.com/api/auth/change-password', changePasswordRequest)
       .subscribe({
         next: () => {
           this.passwordSuccess = 'Password changed successfully!';
