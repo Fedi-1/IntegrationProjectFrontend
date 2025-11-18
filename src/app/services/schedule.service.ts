@@ -26,21 +26,6 @@ export class ScheduleService {
   }
 
   /**
-   * Generate AI-powered schedule for a student
-   */
-  generateSchedule(
-    studentCin: string,
-    request: ScheduleGenerationRequest
-  ): Observable<ScheduleGenerationResponse> {
-    return this.http
-      .post<ScheduleGenerationResponse>(
-        `${this.apiUrl}/generate/${studentCin}`,
-        request
-      )
-      .pipe(catchError(this.handleError));
-  }
-
-  /**
    * Generate schedule from PDF timetable
    */
   generateScheduleFromPdf(
