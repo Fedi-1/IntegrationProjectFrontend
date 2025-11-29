@@ -9,6 +9,9 @@ import { ScheduleViewComponent } from './components/schedule-view/schedule-view.
 import { QuizComponent } from './quiz/quiz.component';
 import { QuizHistoryComponent } from './quiz-history/quiz-history.component';
 import { TodayScheduleComponent } from './components/today-schedule/today-schedule.component';
+import { NotificationSettingsComponent } from './components/notification-settings/notification-settings.component';
+import { SupportComponent } from './components/support/support.component';
+import { AdminSupportComponent } from './components/admin-support/admin-support.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -54,6 +57,21 @@ export const routes: Routes = [
   { 
     path: 'today-schedule', 
     component: TodayScheduleComponent,
+    canActivate: [authGuard]
+  },
+  { 
+    path: 'notification-settings', 
+    component: NotificationSettingsComponent,
+    canActivate: [authGuard]
+  },
+  { 
+    path: 'support', 
+    component: SupportComponent,
+    canActivate: [authGuard]
+  },
+  { 
+    path: 'admin-support', 
+    component: AdminSupportComponent,
     canActivate: [authGuard]
   },
   { path: '**', redirectTo: '/login' }

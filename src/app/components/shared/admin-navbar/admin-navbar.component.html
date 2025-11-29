@@ -1,0 +1,82 @@
+<!-- Admin Navigation Bar -->
+<nav class="admin-navbar">
+  <div class="navbar-content">
+    <!-- Logo Section -->
+    <div class="navbar-brand" (click)="goToDashboard()">
+      <span class="brand-icon">⚙️</span>
+      <span class="brand-text">Admin Panel</span>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="navbar-links">
+      <a routerLink="/admin-dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+        <span class="nav-icon">📊</span>
+        <span class="nav-text">Dashboard</span>
+      </a>
+      <a routerLink="/admin-dashboard" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">👥</span>
+        <span class="nav-text">Users</span>
+      </a>
+      <a routerLink="/admin-support" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">💬</span>
+        <span class="nav-text">Support</span>
+      </a>
+    </div>
+
+    <!-- User Section -->
+    <div class="navbar-user">
+      <button class="settings-btn" (click)="openSettings()" title="Settings">
+        <span class="settings-icon">⚙️</span>
+      </button>
+      <div class="user-info" *ngIf="currentUser">
+        <div class="user-avatar">{{ currentUser.firstName.charAt(0) }}{{ currentUser.lastName.charAt(0) }}</div>
+        <div class="user-details">
+          <span class="user-name">{{ currentUser.firstName }} {{ currentUser.lastName }}</span>
+          <span class="user-role">Administrator</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" *ngIf="showSettings" (click)="closeSettings()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>⚙️ Settings</h3>
+      <button class="close-btn" (click)="closeSettings()">✕</button>
+    </div>
+    
+    <div class="modal-body">
+      <!-- User Info Section -->
+      <div class="settings-section">
+        <h4>👤 Profile Information</h4>
+        <div class="info-grid" *ngIf="currentUser">
+          <div class="info-item">
+            <span class="label">Name:</span>
+            <span class="value">{{ currentUser.firstName }} {{ currentUser.lastName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Email:</span>
+            <span class="value">{{ currentUser.email }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">CIN:</span>
+            <span class="value">{{ currentUser.cin }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Role:</span>
+            <span class="value">Administrator</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="settings-section">
+        <button class="logout-btn" (click)="logout()">
+          🚪 Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

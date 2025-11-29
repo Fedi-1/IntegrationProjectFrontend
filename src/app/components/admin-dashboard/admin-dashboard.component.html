@@ -1,2 +1,248 @@
-<div class="empty-page">
+<div class="dashboard-wrapper">
+  <!-- Admin Navigation Bar -->
+  <app-admin-navbar></app-admin-navbar>
+
+  <div class="admin-dashboard">
+    <div class="dashboard-header">
+      <h1>Tableau de Bord Administrateur</h1>
+      <p class="subtitle">Gestion des utilisateurs et des droits d'accès</p>
+    </div>
+
+  <!-- Statistics Cards -->
+  <div class="statistics-section" *ngIf="statistics">
+    <div class="stat-card">
+      <div class="stat-icon users-icon">👥</div>
+      <div class="stat-details">
+        <h3>{{ statistics.totalUsers }}</h3>
+        <p>Total Utilisateurs</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon student-icon">🎓</div>
+      <div class="stat-details">
+        <h3>{{ statistics.totalStudents }}</h3>
+        <p>Étudiants</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon parent-icon">👨‍👩‍👧</div>
+      <div class="stat-details">
+        <h3>{{ statistics.totalParents }}</h3>
+        <p>Parents</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon admin-icon">⚙️</div>
+      <div class="stat-details">
+        <h3>{{ statistics.totalAdmins }}</h3>
+        <p>Administrateurs</p>
+      </div>
+    </div>
+    <div class="stat-card warning">
+      <div class="stat-icon suspended-icon">🚫</div>
+      <div class="stat-details">
+        <h3>{{ statistics.suspendedUsers }}</h3>
+        <p>Comptes Suspendus</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div class="message success-message" *ngIf="successMessage">
+    <span class="message-icon">✓</span>
+    {{ successMessage }}
+  </div>
+  <div class="message error-message" *ngIf="errorMessage">
+    <span class="message-icon">✕</span>
+    {{ errorMessage }}
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <h2>Filtres et Recherche</h2>
+    <div class="filters-container">
+      <div class="filter-group">
+        <label for="role-filter">Rôle</label>
+        <select id="role-filter" [(ngModel)]="selectedRole" (change)="applyFilters()">
+          <option value="">Tous les rôles</option>
+          <option value="ETUDIANT">Étudiant</option>
+          <option value="PARENT">Parent</option>
+          <option value="ADMINISTRATOR">Administrateur</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="status-filter">Statut</label>
+        <select id="status-filter" [(ngModel)]="selectedSuspendedFilter" (change)="applyFilters()">
+          <option value="">Tous les statuts</option>
+          <option value="false">Actif</option>
+          <option value="true">Suspendu</option>
+        </select>
+      </div>
+
+      <div class="filter-group search-group">
+        <label for="search-input">Recherche</label>
+        <input 
+          type="text" 
+          id="search-input" 
+          [(ngModel)]="searchText" 
+          (keyup.enter)="applyFilters()"
+          placeholder="Nom, email, CIN..."
+        />
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn btn-primary" (click)="applyFilters()">
+          🔍 Rechercher
+        </button>
+        <button class="btn btn-secondary" (click)="resetFilters()">
+          🔄 Réinitialiser
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Users Table -->
+  <div class="users-section">
+    <h2>Liste des Utilisateurs ({{ filteredUsers.length }})</h2>
+    
+    <div class="loading" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Chargement des utilisateurs...</p>
+    </div>
+
+    <div class="table-container" *ngIf="!loading">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>CIN</th>
+            <th>Nom Complet</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Âge</th>
+            <th>Rôle</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of filteredUsers" [class.suspended-row]="user.suspended">
+            <td>{{ user.id }}</td>
+            <td>{{ user.cin }}</td>
+            <td>{{ user.firstName }} {{ user.lastName }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phoneNumber }}</td>
+            <td>{{ user.age }}</td>
+            <td>
+              <span class="badge" [ngClass]="getRoleBadgeClass(user.role)">
+                {{ getRoleDisplayName(user.role) }}
+              </span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="getStatusBadgeClass(user.suspended)">
+                {{ user.suspended ? 'Suspendu' : 'Actif' }}
+              </span>
+            </td>
+            <td class="actions-cell">
+              <div class="action-buttons">
+                <!-- Suspend/Unsuspend Button -->
+                <button 
+                  *ngIf="!user.suspended && user.role !== 'ADMINISTRATOR'"
+                  class="btn-action btn-suspend"
+                  (click)="showConfirm(user, 'suspend')"
+                  title="Suspendre">
+                  🚫
+                </button>
+                <button 
+                  *ngIf="user.suspended"
+                  class="btn-action btn-activate"
+                  (click)="showConfirm(user, 'unsuspend')"
+                  title="Réactiver">
+                  ✓
+                </button>
+
+                <!-- Role Change Dropdown -->
+                <div class="dropdown">
+                  <button class="btn-action btn-role" title="Changer le rôle">
+                    👤
+                  </button>
+                  <div class="dropdown-content">
+                    <button 
+                      *ngIf="user.role !== 'ETUDIANT'"
+                      (click)="showConfirm(user, 'changeRole', 'ETUDIANT')">
+                      Étudiant
+                    </button>
+                    <button 
+                      *ngIf="user.role !== 'PARENT'"
+                      (click)="showConfirm(user, 'changeRole', 'PARENT')">
+                      Parent
+                    </button>
+                    <button 
+                      *ngIf="user.role !== 'ADMINISTRATOR'"
+                      (click)="showConfirm(user, 'changeRole', 'ADMINISTRATOR')">
+                      Administrateur
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Delete Button -->
+                <button 
+                  class="btn-action btn-delete"
+                  (click)="showConfirm(user, 'delete')"
+                  title="Supprimer">
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="filteredUsers.length === 0 && !loading">
+            <td colspan="9" class="no-data">
+              Aucun utilisateur trouvé
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Confirmation Dialog -->
+  <div class="modal-overlay" *ngIf="showConfirmDialog" (click)="closeConfirm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Confirmation</h3>
+        <button class="modal-close" (click)="closeConfirm()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p *ngIf="confirmAction === 'suspend'">
+          Êtes-vous sûr de vouloir suspendre le compte de 
+          <strong>{{ selectedUser?.firstName }} {{ selectedUser?.lastName }}</strong> ?
+        </p>
+        <p *ngIf="confirmAction === 'unsuspend'">
+          Êtes-vous sûr de vouloir réactiver le compte de 
+          <strong>{{ selectedUser?.firstName }} {{ selectedUser?.lastName }}</strong> ?
+        </p>
+        <p *ngIf="confirmAction === 'delete'">
+          Êtes-vous sûr de vouloir supprimer définitivement le compte de 
+          <strong>{{ selectedUser?.firstName }} {{ selectedUser?.lastName }}</strong> ?
+          <br><br>
+          <span class="warning-text">⚠️ Cette action est irréversible !</span>
+        </p>
+        <p *ngIf="confirmAction === 'changeRole'">
+          Êtes-vous sûr de vouloir changer le rôle de 
+          <strong>{{ selectedUser?.firstName }} {{ selectedUser?.lastName }}</strong>
+          en <strong>{{ getRoleDisplayName(newRole || '') }}</strong> ?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeConfirm()">
+          Annuler
+        </button>
+        <button class="btn btn-danger" (click)="confirmActionExecution()">
+          Confirmer
+        </button>
+      </div>
+    </div>
+  </div>
+  </div>
 </div>

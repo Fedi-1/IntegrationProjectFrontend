@@ -1,0 +1,288 @@
+<div class="admin-support-container">
+  <!-- Header -->
+  <div class="admin-support-header">
+    <h1>Support Ticket Management</h1>
+    <p>View and respond to user support tickets</p>
+  </div>
+
+  <!-- Messages -->
+  <div *ngIf="successMessage" class="message success-message">
+    <span class="message-icon">✓</span>
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="message error-message">
+    <span class="message-icon">✕</span>
+    {{ errorMessage }}
+  </div>
+
+  <!-- Statistics Dashboard -->
+  <div class="stats-grid">
+    <div class="stat-card total">
+      <div class="stat-icon">📋</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ totalTickets }}</div>
+        <div class="stat-label">Total Tickets</div>
+      </div>
+    </div>
+    <div class="stat-card open">
+      <div class="stat-icon">🔓</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ openTickets }}</div>
+        <div class="stat-label">Open</div>
+      </div>
+    </div>
+    <div class="stat-card progress">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ inProgressTickets }}</div>
+        <div class="stat-label">In Progress</div>
+      </div>
+    </div>
+    <div class="stat-card urgent">
+      <div class="stat-icon">🚨</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ urgentTickets }}</div>
+        <div class="stat-label">Urgent</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="admin-support-content">
+    <!-- Tickets List View -->
+    <div *ngIf="!selectedTicket" class="tickets-view">
+      <!-- Filters -->
+      <div class="filters-section">
+        <div class="filter-group">
+          <label>Status:</label>
+          <select [(ngModel)]="filterStatus" class="filter-select">
+            <option value="all">All Statuses</option>
+            <option value="OPEN">Open</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="RESOLVED">Resolved</option>
+            <option value="CLOSED">Closed</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Priority:</label>
+          <select [(ngModel)]="filterPriority" class="filter-select">
+            <option value="all">All Priorities</option>
+            <option value="LOW">Low</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High</option>
+            <option value="URGENT">Urgent</option>
+          </select>
+        </div>
+
+        <div class="filter-group search-group">
+          <input 
+            type="text" 
+            [(ngModel)]="searchQuery" 
+            placeholder="Search tickets..."
+            class="search-input">
+        </div>
+
+        <button (click)="clearFilters()" class="btn btn-secondary">
+          Clear Filters
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Loading tickets...</p>
+      </div>
+
+      <!-- Tickets List -->
+      <div *ngIf="!loading" class="tickets-list">
+        <div *ngFor="let ticket of filteredTickets" 
+             class="admin-ticket-card"
+             (click)="selectTicket(ticket)">
+          <div class="ticket-main">
+            <div class="ticket-header">
+              <div class="ticket-title-section">
+                <h3>{{ ticket.subject }}</h3>
+                <div class="ticket-user">
+                  <span class="user-icon">👤</span>
+                  {{ ticket.userName }}
+                </div>
+              </div>
+              <div class="ticket-badges">
+                <span class="badge" [ngClass]="getStatusClass(ticket.status)">
+                  {{ formatStatus(ticket.status) }}
+                </span>
+                <span class="badge" [ngClass]="getPriorityClass(ticket.priority)">
+                  {{ formatPriority(ticket.priority) }}
+                </span>
+              </div>
+            </div>
+            
+            <p class="ticket-description">{{ ticket.description }}</p>
+            
+            <div class="ticket-footer">
+              <span class="ticket-date">
+                🕒 {{ formatDate(ticket.createdAt) }}
+              </span>
+              <span class="message-count">
+                💬 {{ ticket.messageCount }} {{ ticket.messageCount === 1 ? 'message' : 'messages' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="filteredTickets.length === 0" class="empty-state">
+          <div class="empty-icon">📭</div>
+          <h3>No tickets found</h3>
+          <p>There are no support tickets matching your filters.</p>
+          <button (click)="clearFilters()" class="btn btn-primary">
+            Clear Filters
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ticket Detail View -->
+    <div *ngIf="selectedTicket" class="ticket-detail-view">
+      <!-- Ticket Header -->
+      <div class="detail-header">
+        <button (click)="backToList()" class="back-btn">
+          ← Back to Tickets
+        </button>
+        <div class="detail-title">
+          <h2>{{ selectedTicket.subject }}</h2>
+          <div class="detail-badges">
+            <span class="badge" [ngClass]="getStatusClass(selectedTicket.status)">
+              {{ formatStatus(selectedTicket.status) }}
+            </span>
+            <span class="badge" [ngClass]="getPriorityClass(selectedTicket.priority)">
+              {{ formatPriority(selectedTicket.priority) }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ticket Actions -->
+      <div class="ticket-actions">
+        <div class="action-group">
+          <label>Update Status:</label>
+          <div class="button-group">
+            <button 
+              (click)="updateTicketStatus(TicketStatus.IN_PROGRESS)"
+              class="btn btn-action"
+              [disabled]="selectedTicket.status === TicketStatus.IN_PROGRESS">
+              In Progress
+            </button>
+            <button 
+              (click)="updateTicketStatus(TicketStatus.RESOLVED)"
+              class="btn btn-action"
+              [disabled]="selectedTicket.status === TicketStatus.RESOLVED">
+              Resolved
+            </button>
+            <button 
+              (click)="updateTicketStatus(TicketStatus.CLOSED)"
+              class="btn btn-action"
+              [disabled]="selectedTicket.status === TicketStatus.CLOSED">
+              Close
+            </button>
+          </div>
+        </div>
+
+        <div class="action-group">
+          <label>Update Priority:</label>
+          <div class="button-group">
+            <button 
+              (click)="updateTicketPriority(TicketPriority.LOW)"
+              class="btn btn-action priority-btn"
+              [class.active]="selectedTicket.priority === TicketPriority.LOW">
+              Low
+            </button>
+            <button 
+              (click)="updateTicketPriority(TicketPriority.MEDIUM)"
+              class="btn btn-action priority-btn"
+              [class.active]="selectedTicket.priority === TicketPriority.MEDIUM">
+              Medium
+            </button>
+            <button 
+              (click)="updateTicketPriority(TicketPriority.HIGH)"
+              class="btn btn-action priority-btn"
+              [class.active]="selectedTicket.priority === TicketPriority.HIGH">
+              High
+            </button>
+            <button 
+              (click)="updateTicketPriority(TicketPriority.URGENT)"
+              class="btn btn-action priority-btn"
+              [class.active]="selectedTicket.priority === TicketPriority.URGENT">
+              Urgent
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ticket Info -->
+      <div class="ticket-info">
+        <div class="info-item">
+          <span class="info-label">User:</span>
+          <span class="info-value">{{ selectedTicket.userName }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Created:</span>
+          <span class="info-value">{{ formatDate(selectedTicket.createdAt) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Description:</span>
+          <span class="info-value">{{ selectedTicket.description }}</span>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="conversation-section">
+        <h3>Conversation</h3>
+        
+        <div *ngIf="messageLoading" class="loading">
+          <div class="spinner"></div>
+          <p>Loading messages...</p>
+        </div>
+
+        <div *ngIf="!messageLoading" class="messages-container">
+          <div *ngIf="messages.length === 0" class="empty-messages">
+            <p>No messages yet. Be the first to respond!</p>
+          </div>
+
+          <div *ngFor="let message of messages" class="message-bubble"
+               [class.admin-message]="message.isAdminMessage"
+               [class.user-message]="!message.isAdminMessage">
+            <div class="message-header">
+              <span class="sender-name">{{ message.senderName }}</span>
+              <span class="message-time">{{ formatDate(message.createdAt) }}</span>
+            </div>
+            <div class="message-content">{{ message.content }}</div>
+          </div>
+        </div>
+
+        <!-- Message Input -->
+        <div class="message-input">
+          <textarea 
+            [(ngModel)]="newMessage"
+            placeholder="Type your response..."
+            rows="3"
+            (keydown.ctrl.enter)="sendMessage()"
+            [disabled]="selectedTicket.status === TicketStatus.CLOSED">
+          </textarea>
+          <button 
+            (click)="sendMessage()" 
+            class="btn btn-primary"
+            [disabled]="!newMessage.trim() || selectedTicket.status === TicketStatus.CLOSED">
+            Send Reply
+          </button>
+        </div>
+
+        <div *ngIf="selectedTicket.status === TicketStatus.CLOSED" 
+             class="ticket-closed-notice">
+          This ticket is closed. Reopen it to continue the conversation.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

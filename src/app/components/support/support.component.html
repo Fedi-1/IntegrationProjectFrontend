@@ -1,0 +1,177 @@
+<div class="support-container">
+  <div class="support-header">
+    <h1>💬 Centre de Support</h1>
+    <p>Contactez l'administrateur pour toute assistance</p>
+  </div>
+
+  <!-- Messages -->
+  <div class="message success-message" *ngIf="successMessage">
+    <span class="message-icon">✓</span>
+    {{ successMessage }}
+  </div>
+  <div class="message error-message" *ngIf="errorMessage">
+    <span class="message-icon">✕</span>
+    {{ errorMessage }}
+  </div>
+
+  <!-- Main Content -->
+  <div class="support-content">
+    <!-- Ticket List View -->
+    <div class="tickets-section" *ngIf="!selectedTicket">
+      <div class="section-header">
+        <h2>Mes Tickets ({{ tickets.length }})</h2>
+        <button class="btn btn-primary" (click)="openCreateTicket()">
+          ➕ Nouveau Ticket
+        </button>
+      </div>
+
+      <!-- Loading -->
+      <div class="loading" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Chargement...</p>
+      </div>
+
+      <!-- Tickets List -->
+      <div class="tickets-list" *ngIf="!loading">
+        <div class="ticket-card" *ngFor="let ticket of tickets" (click)="selectTicket(ticket)">
+          <div class="ticket-header">
+            <h3>{{ ticket.subject }}</h3>
+            <div class="ticket-badges">
+              <span class="badge" [ngClass]="getStatusClass(ticket.status)">
+                {{ getStatusDisplay(ticket.status) }}
+              </span>
+              <span class="badge" [ngClass]="getPriorityClass(ticket.priority)">
+                {{ getPriorityDisplay(ticket.priority) }}
+              </span>
+            </div>
+          </div>
+          <p class="ticket-description">{{ ticket.description }}</p>
+          <div class="ticket-footer">
+            <span class="ticket-info">💬 {{ ticket.messageCount }} messages</span>
+            <span class="ticket-date">📅 {{ formatDate(ticket.updatedAt) }}</span>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="tickets.length === 0">
+          <div class="empty-icon">📭</div>
+          <h3>Aucun ticket</h3>
+          <p>Vous n'avez créé aucun ticket de support</p>
+          <button class="btn btn-primary" (click)="openCreateTicket()">
+            Créer mon premier ticket
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conversation View -->
+    <div class="conversation-section" *ngIf="selectedTicket">
+      <div class="conversation-header">
+        <button class="back-btn" (click)="backToList()">
+          ← Retour
+        </button>
+        <div class="conversation-title">
+          <h2>{{ selectedTicket.subject }}</h2>
+          <div class="ticket-badges">
+            <span class="badge" [ngClass]="getStatusClass(selectedTicket.status)">
+              {{ getStatusDisplay(selectedTicket.status) }}
+            </span>
+            <span class="badge" [ngClass]="getPriorityClass(selectedTicket.priority)">
+              {{ getPriorityDisplay(selectedTicket.priority) }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="conversation-body">
+        <div class="ticket-details">
+          <p><strong>Description:</strong> {{ selectedTicket.description }}</p>
+          <p class="ticket-meta">Créé le {{ formatDate(selectedTicket.createdAt) }}</p>
+        </div>
+
+        <div class="messages-container">
+          <div class="message-bubble" 
+               *ngFor="let message of selectedTicket.messages"
+               [ngClass]="{'admin-message': message.isAdminMessage, 'user-message': !message.isAdminMessage}">
+            <div class="message-header">
+              <span class="sender-name">
+                {{ message.isAdminMessage ? '👨‍💼 ' : '👤 ' }}{{ message.senderName }}
+              </span>
+              <span class="message-time">{{ formatDate(message.createdAt) }}</span>
+            </div>
+            <div class="message-content">{{ message.content }}</div>
+          </div>
+
+          <div class="empty-messages" *ngIf="!selectedTicket.messages || selectedTicket.messages.length === 0">
+            <p>Aucun message pour le moment</p>
+          </div>
+        </div>
+
+        <div class="message-input" *ngIf="selectedTicket.status !== TicketStatus.CLOSED">
+          <textarea 
+            [(ngModel)]="newMessage"
+            placeholder="Tapez votre message..."
+            rows="3"
+            (keydown.ctrl.enter)="sendMessage()">
+          </textarea>
+          <button class="btn btn-primary" (click)="sendMessage()" [disabled]="!newMessage.trim()">
+            Envoyer
+          </button>
+        </div>
+
+        <div class="ticket-closed-notice" *ngIf="selectedTicket.status === TicketStatus.CLOSED">
+          <p>🔒 Ce ticket est fermé. Vous ne pouvez plus envoyer de messages.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Ticket Modal -->
+  <div class="modal-overlay" *ngIf="showCreateTicket" (click)="closeCreateTicket()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>➕ Nouveau Ticket de Support</h3>
+        <button class="modal-close" (click)="closeCreateTicket()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="subject">Sujet *</label>
+          <input 
+            type="text" 
+            id="subject" 
+            [(ngModel)]="newTicket.subject"
+            placeholder="Résumez votre problème en quelques mots"
+            maxlength="200"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="priority">Priorité *</label>
+          <select id="priority" [(ngModel)]="newTicket.priority">
+            <option [value]="TicketPriority.LOW">Faible</option>
+            <option [value]="TicketPriority.MEDIUM">Moyenne</option>
+            <option [value]="TicketPriority.HIGH">Haute</option>
+            <option [value]="TicketPriority.URGENT">Urgente</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description *</label>
+          <textarea 
+            id="description" 
+            [(ngModel)]="newTicket.description"
+            placeholder="Décrivez votre problème en détail..."
+            rows="6"
+          ></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeCreateTicket()">
+          Annuler
+        </button>
+        <button class="btn btn-primary" (click)="createTicket()">
+          Créer le Ticket
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -35,3 +35,39 @@ export interface AuthResponse {
   message: string;
   user?: UserDTO;
 }
+
+// Admin-specific models
+export interface UserManagementDTO {
+  id: number;
+  cin: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  age: number;
+  phoneNumber: string;
+  role: 'ETUDIANT' | 'PARENT' | 'ADMINISTRATOR';
+  suspended: boolean;
+  dtype: string;
+}
+
+export interface UpdateRoleRequest {
+  role: 'ETUDIANT' | 'PARENT' | 'ADMINISTRATOR';
+}
+
+export interface SuspendUserRequest {
+  suspended: boolean;
+}
+
+export interface AdminResponse {
+  success: boolean;
+  message: string;
+  data?: any;
+}
+
+export interface UserStatistics {
+  totalUsers: number;
+  totalStudents: number;
+  totalParents: number;
+  totalAdmins: number;
+  suspendedUsers: number;
+}

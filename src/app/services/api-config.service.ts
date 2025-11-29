@@ -16,10 +16,10 @@ export class ApiConfigService {
   }
 
   // Auth endpoints
-  get AUTH_URL() { return `${this.API_URL}/auth`; }
+  get AUTH_URL() { return `${this.API_URL}/api/auth`; }
   
   // Quiz endpoints
-  get QUIZ_URL() { return `${this.API_URL}/quiz`; }
+  get QUIZ_URL() { return `${this.API_URL}/api/quiz`; }
   
   // Schedule endpoints
   get SCHEDULE_URL() { return `${this.API_URL}/daily-schedule`; }
