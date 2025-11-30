@@ -1,0 +1,97 @@
+<div class="accueil-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="gradient-text">Smart Revision</span>
+        <br>
+        Votre Assistant de Révision Intelligent
+      </h1>
+      <p class="hero-subtitle">
+        Générez automatiquement votre emploi du temps de révision personnalisé basé sur votre emploi du temps scolaire
+      </p>
+      <div class="hero-buttons">
+        <button class="btn btn-primary" (click)="navigateToSignup()">
+          Commencer Gratuitement
+        </button>
+        <button class="btn btn-secondary" (click)="navigateToLogin()">
+          Se Connecter
+        </button>
+      </div>
+    </div>
+    <div class="hero-image">
+      <div class="floating-card">
+        <div class="card-icon">📚</div>
+        <div class="card-text">
+          <div class="card-title">Planning Intelligent</div>
+          <div class="card-subtitle">Optimisé pour vos besoins</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <h2 class="section-title">Pourquoi Choisir Smart Revision ?</h2>
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let feature of features">
+        <div class="feature-icon">{{ feature.icon }}</div>
+        <h3 class="feature-title">{{ feature.title }}</h3>
+        <p class="feature-description">{{ feature.description }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works-section">
+    <h2 class="section-title">Comment Ça Marche ?</h2>
+    <div class="steps-container">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3 class="step-title">Créez votre compte</h3>
+        <p class="step-description">Inscrivez-vous en tant qu'étudiant ou parent en quelques secondes</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3 class="step-title">Importez votre emploi du temps</h3>
+        <p class="step-description">Téléchargez votre emploi du temps scolaire (PDF)</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3 class="step-title">Génération automatique</h3>
+        <p class="step-description">Notre IA génère votre planning de révision personnalisé</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-number">4</div>
+        <h3 class="step-title">Révisez et réussissez</h3>
+        <p class="step-description">Suivez votre planning et améliorez vos résultats</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2 class="cta-title">Prêt à Optimiser Vos Révisions ?</h2>
+      <p class="cta-subtitle">Rejoignez des centaines d'étudiants qui ont amélioré leurs résultats</p>
+      <button class="btn btn-primary btn-large" (click)="navigateToSignup()">
+        Commencer Maintenant
+      </button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2025 Smart Revision. Tous droits réservés.</p>
+      <div class="footer-links">
+        <a href="#" class="footer-link">Confidentialité</a>
+        <a href="#" class="footer-link">Conditions</a>
+        <a href="#" class="footer-link">Contact</a>
+      </div>
+    </div>
+  </footer>
+</div>

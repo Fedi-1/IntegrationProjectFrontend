@@ -1,9 +1,12 @@
 .today-container {
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .header {
@@ -87,32 +90,34 @@
   align-items: center;
   gap: 15px;
   padding: 20px;
-  background: #f8f9fa;
-  border-radius: 12px;
-  border-left: 5px solid #3498db;
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  border-left: 5px solid var(--primary-blue);
   transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .stat-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
 }
 
 .stat-card.completed {
-  border-left-color: #27ae60;
+  border-left-color: var(--success-green);
 }
 
 .stat-card.remaining {
-  border-left-color: #e74c3c;
+  border-left-color: var(--error-red);
 }
 
 .stat-card.progress {
-  border-left-color: #f39c12;
+  border-left-color: var(--primary-blue);
 }
 
 .stat-card.late {
-  border-left-color: #e67e22;
-  background: #fff3e0;
+  border-left-color: var(--warning-yellow);
+  background: #FEF3C7;
 }
 
 .stat-icon {

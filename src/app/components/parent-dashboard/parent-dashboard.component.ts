@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -41,7 +41,7 @@ interface Alert {
   templateUrl: './parent-dashboard.component.html',
   styleUrls: ['./parent-dashboard.component.css']
 })
-export class ParentDashboardComponent implements OnInit {
+export class ParentDashboardComponent implements OnInit, AfterViewInit {
   currentUser: UserDTO | null = null;
   children: Child[] = [];
   selectedChild: Child | null = null;
@@ -68,6 +68,15 @@ export class ParentDashboardComponent implements OnInit {
         this.loadChildren(user.cin);
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    // Fix scroll bar visibility bug - force layout recalculation
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+      // Also ensure scroll is visible
+      document.body.style.overflow = 'auto';
+    }, 100);
   }
 
   loadChildren(parentCin: string) {

@@ -1,0 +1,13 @@
+<div class="toast" *ngIf="isVisible" 
+     [class.success]="type === 'success'"
+     [class.error]="type === 'error'"
+     [class.info]="type === 'info'"
+     [class.warning]="type === 'warning'">
+  <div class="toast-icon">
+    <span *ngIf="type === 'success'">✓</span>
+    <span *ngIf="type === 'error'">✕</span>
+    <span *ngIf="type === 'info'">ℹ</span>
+    <span *ngIf="type === 'warning'">⚠</span>
+  </div>
+  <p class="toast-message">{{ message }}</p>
+</div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ScheduleService } from '../../services/schedule.service';
@@ -6,11 +6,13 @@ import { AuthService } from '../../services/auth.service';
 import { WeekSchedule, DaySchedule, ActivityBlock } from '../../models/schedule.model';
 import { UserDTO } from '../../models/auth.model';
 import { StudentNavbarComponent } from '../shared/student-navbar/student-navbar.component';
+import { ConfirmationModalComponent } from '../shared/confirmation-modal/confirmation-modal.component';
+import { ToastComponent } from '../shared/toast/toast.component';
 
 @Component({
   selector: 'app-schedule-view',
   standalone: true,
-  imports: [CommonModule, StudentNavbarComponent],
+  imports: [CommonModule, StudentNavbarComponent, ConfirmationModalComponent, ToastComponent],
   templateUrl: './schedule-view.component.html',
   styleUrl: './schedule-view.component.css'
 })
@@ -21,6 +23,11 @@ export class ScheduleViewComponent implements OnInit {
   selectedDay: string = 'Monday';
   daysOfWeek: string[] = [];
   currentUser: UserDTO | null = null;
+
+  // Modal state
+  showDeleteModal = false;
+
+  @ViewChild(ToastComponent) toast!: ToastComponent;
 
   constructor(
     private scheduleService: ScheduleService,
@@ -115,24 +122,37 @@ export class ScheduleViewComponent implements OnInit {
     return this.scheduleService.getActivityIcon(activity);
   }
 
-  deleteSchedule() {
+  openDeleteModal() {
+    this.showDeleteModal = true;
+  }
+
+  confirmDelete() {
     if (!this.currentUser) return;
     
-    if (confirm('Are you sure you want to delete this schedule? This action cannot be undone.')) {
-      this.loading = true;
-      
-      this.scheduleService.deleteStudentSchedule(this.currentUser.cin).subscribe({
-        next: () => {
-          this.loading = false;
-          alert('Schedule deleted successfully!');
+    this.loading = true;
+    this.showDeleteModal = false;
+    
+    this.scheduleService.deleteStudentSchedule(this.currentUser.cin).subscribe({
+      next: () => {
+        this.loading = false;
+        this.toast.show('Schedule deleted successfully!', 'success');
+        setTimeout(() => {
           this.router.navigate(['/dashboard']);
-        },
-        error: (error) => {
-          this.loading = false;
-          alert('Failed to delete schedule: ' + error.message);
-        }
-      });
-    }
+        }, 1500);
+      },
+      error: (error) => {
+        this.loading = false;
+        this.toast.show('Failed to delete schedule: ' + error.message, 'error');
+      }
+    });
+  }
+
+  cancelDelete() {
+    this.showDeleteModal = false;
+  }
+
+  deleteSchedule() {
+    this.openDeleteModal();
   }
 
   regenerateSchedule() {

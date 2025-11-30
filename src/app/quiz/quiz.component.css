@@ -402,13 +402,42 @@ h2 {
 }
 
 .review-option .badge.correct {
-  background: #28a745;
+  background: var(--success-green, #28a745);
   color: white;
 }
 
 .review-option .badge.wrong {
-  background: #dc3545;
+  background: var(--error-red, #dc3545);
   color: white;
+}
+
+/* Explanation Box */
+.explanation-box {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border-left: 4px solid var(--warning-yellow, #F59E0B);
+  border-radius: 8px;
+}
+
+.explanation-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary, #1E293B);
+  font-weight: 600;
+}
+
+.explanation-icon {
+  font-size: 1.25rem;
+}
+
+.explanation-text {
+  margin: 0;
+  color: var(--text-secondary, #475569);
+  line-height: 1.6;
+  font-size: 0.95rem;
 }
 
 /* Responsive */

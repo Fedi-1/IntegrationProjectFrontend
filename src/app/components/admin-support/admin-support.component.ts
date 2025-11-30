@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { SupportService } from '../../services/support.service';
 import { AuthService } from '../../services/auth.service';
 import { 
@@ -40,7 +41,8 @@ export class AdminSupportComponent implements OnInit {
 
   constructor(
     private supportService: SupportService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -259,5 +261,9 @@ export class AdminSupportComponent implements OnInit {
 
   get urgentTickets(): number {
     return this.tickets.filter(t => t.priority === TicketPriority.URGENT).length;
+  }
+
+  goBackToDashboard(): void {
+    this.router.navigate(['/admin-dashboard']);
   }
 }

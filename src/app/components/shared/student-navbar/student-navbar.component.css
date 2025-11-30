@@ -1,6 +1,6 @@
 /* Navigation Bar */
 .student-navbar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-blue, #2563EB) 0%, var(--primary-dark, #1E40AF) 100%);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   position: sticky;
   top: 0;
@@ -82,7 +82,7 @@
 
 .nav-link.active {
   background: white;
-  color: #667eea;
+  color: var(--primary-blue, #2563EB);
   border-color: white;
   box-shadow: 0 4px 16px rgba(255, 255, 255, 0.3);
 }
@@ -149,7 +149,7 @@
   height: 40px;
   border-radius: 50%;
   background: white;
-  color: #667eea;
+  color: var(--primary-blue, #2563EB);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -232,7 +232,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-blue, #2563EB) 0%, var(--primary-dark, #1E40AF) 100%);
   border-radius: 24px 24px 0 0;
 }
 
@@ -316,7 +316,7 @@
 /* Buttons */
 .action-btn {
   padding: 12px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-blue, #2563EB);
   color: white;
   border: none;
   border-radius: 12px;
@@ -324,12 +324,13 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
 .action-btn:hover {
+  background: var(--primary-dark, #1E40AF);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
 }
 
 .logout-btn {

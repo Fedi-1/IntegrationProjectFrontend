@@ -47,6 +47,8 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('userCIN');
+    localStorage.removeItem('userRole');
     this.currentUserSubject.next(null);
   }
 
@@ -73,8 +75,25 @@ export class AuthService {
     return user?.role === 'ADMINISTRATOR';
   }
 
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/api/password/forgot`, { email })
+      .pipe(catchError(this.handleError));
+  }
+
+  validateResetToken(token: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/password/validate-token?token=${token}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/api/password/reset`, { token, newPassword })
+      .pipe(catchError(this.handleError));
+  }
+
   private setCurrentUser(user: UserDTO): void {
     localStorage.setItem('currentUser', JSON.stringify(user));
+    localStorage.setItem('userCIN', user.cin); // Store CIN for authorization header
+    localStorage.setItem('userRole', user.role); // Store role for frontend guards
     this.currentUserSubject.next(user);
   }
 

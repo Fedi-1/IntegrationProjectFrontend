@@ -155,6 +155,17 @@
             <span *ngIf="option === question.studentAnswer && option !== question.correctAnswer" class="badge wrong">Your Answer</span>
           </div>
         </div>
+        
+        <!-- Explanation for wrong answers -->
+        <div *ngIf="!question.isCorrect" class="explanation-box">
+          <div class="explanation-header">
+            <span class="explanation-icon">💡</span>
+            <strong>Explanation:</strong>
+          </div>
+          <p class="explanation-text">
+            {{ question.explanation || 'The correct answer is ' + question.correctAnswer + ': ' + getOptionText(question, question.correctAnswer) }}
+          </p>
+        </div>
       </div>
     </div>
 
@@ -169,3 +180,6 @@
   </div>
   </div>
 </div>
+
+<!-- Toast Notification -->
+<app-toast></app-toast>

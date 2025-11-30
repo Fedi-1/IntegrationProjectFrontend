@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { StudentNavbarComponent } from '../components/shared/student-navbar/student-navbar.component';
+import { ToastComponent } from '../components/shared/toast/toast.component';
 
 interface QuizQuestion {
   id?: number;
@@ -19,6 +20,7 @@ interface QuizQuestion {
   correctAnswer: string;
   studentAnswer?: string;
   isCorrect?: boolean;
+  explanation?: string;  // Add explanation field
 }
 
 interface Quiz {
@@ -31,7 +33,7 @@ interface Quiz {
 @Component({
   selector: 'app-quiz',
   standalone: true,
-  imports: [CommonModule, FormsModule, StudentNavbarComponent],
+  imports: [CommonModule, FormsModule, StudentNavbarComponent, ToastComponent],
   templateUrl: './quiz.component.html',
   styleUrls: ['./quiz.component.css']
 })
@@ -53,6 +55,8 @@ export class QuizComponent implements OnInit {
   
   loading: boolean = false;
   error: string = '';
+
+  @ViewChild(ToastComponent) toast!: ToastComponent;
 
   constructor(
     private http: HttpClient,
@@ -331,14 +335,18 @@ export class QuizComponent implements OnInit {
       .subscribe({
         next: (response) => {
           if (response.success) {
-            alert('Revision marked as completed!');
-            this.resetQuiz();
+            this.toast.show('Revision marked as completed! Great job! 🎉', 'success');
+            setTimeout(() => {
+              this.resetQuiz();
+            }, 2000);
           } else {
+            this.toast.show('Failed to mark revision as complete', 'error');
             this.error = 'Failed to mark revision as complete';
           }
         },
         error: (err) => {
           console.error('Error completing revision:', err);
+          this.toast.show('Error marking revision as complete', 'error');
           this.error = 'Error marking revision as complete';
         }
       });

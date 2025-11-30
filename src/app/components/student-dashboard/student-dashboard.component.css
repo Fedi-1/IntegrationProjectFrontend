@@ -1,7 +1,7 @@
 /* Simple Dashboard Styles */
 .dashboard-wrapper {
   min-height: 100vh;
-  background: #f5f7fa;
+  background: var(--bg-page, #F8FAFC);
 }
 
 .dashboard-container {
@@ -12,7 +12,7 @@
 
 /* Welcome Section */
 .welcome-section {
-  background: white;
+  background: var(--card-bg, white);
   padding: 32px;
   border-radius: 12px;
   margin-bottom: 32px;
@@ -21,14 +21,14 @@
 
 .welcome-section h1 {
   font-size: 28px;
-  color: #2d3748;
+  color: var(--text-primary, #1E293B);
   margin: 0 0 8px 0;
   font-weight: 600;
 }
 
 .welcome-section p {
   font-size: 16px;
-  color: #718096;
+  color: var(--text-secondary, #64748B);
   margin: 0;
 }
 
@@ -42,7 +42,7 @@
 
 /* Simple Card */
 .simple-card {
-  background: white;
+  background: var(--card-bg, white);
   padding: 32px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -55,7 +55,7 @@
 .simple-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-  border-color: #667eea;
+  border-color: var(--primary-blue, #2563EB);
 }
 
 .simple-card.disabled {
@@ -77,14 +77,14 @@
 
 .simple-card h3 {
   font-size: 20px;
-  color: #2d3748;
+  color: var(--text-primary, #1E293B);
   margin: 0 0 8px 0;
   font-weight: 600;
 }
 
 .simple-card p {
   font-size: 14px;
-  color: #718096;
+  color: var(--text-secondary, #64748B);
   margin: 0;
   line-height: 1.5;
 }
@@ -93,7 +93,7 @@
   position: absolute;
   top: 16px;
   right: 16px;
-  background: #f56565;
+  background: var(--error-red, #EF4444);
   color: white;
   padding: 4px 12px;
   border-radius: 12px;

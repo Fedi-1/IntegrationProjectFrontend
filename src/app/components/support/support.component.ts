@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SupportService } from '../../services/support.service';
@@ -41,7 +41,8 @@ export class SupportComponent implements OnInit {
 
   constructor(
     private supportService: SupportService,
-    private authService: AuthService
+    private authService: AuthService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +50,13 @@ export class SupportComponent implements OnInit {
     if (this.currentUser) {
       this.loadTickets();
     }
+  }
+
+  /**
+   * Go back to previous page
+   */
+  goBack(): void {
+    this.location.back();
   }
 
   /**
